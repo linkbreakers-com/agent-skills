@@ -1,0 +1,22 @@
+{
+  "name": "linkbreakers",
+  "owner": {
+    "name": "Linkbreakers",
+    "email": "support@linkbreakers.com"
+  },
+  "metadata": {
+    "description": "Official Linkbreakers plugins for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "linkbreakers",
+      "source": "./",
+      "description": "Linkbreakers skills plus the hosted Linkbreakers MCP server: tracked QR codes, lead capture workflows, visitors, webhooks and custom domains.",
+      "version": "1.0.0",
+      "homepage": "https://linkbreakers.com",
+      "repository": "https://github.com/linkbreakers-com/agent-skills",
+      "license": "MIT",
+      "category": "productivity"
+    }
+  ]
+}

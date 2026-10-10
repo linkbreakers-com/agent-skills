@@ -1,0 +1,60 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Skills have valid frontmatter and discovery.json skills[] is up to date
+        run: node scripts/build-discovery.mjs --check
+
+      - name: discovery.json matches its schema
+        run: npx -y -p ajv-cli@5 -p ajv-formats@3 ajv validate --spec=draft2020 -c ajv-formats -s schema/discovery.schema.json -d discovery.json
+
+      - name: Fetch Agent Plugins 1.0.0 schemas
+        run: |
+          mkdir -p "$RUNNER_TEMP/agent-plugins"
+          curl -fsSL https://agent-plugins.org/schemas/1.0.0/plugin.schema.json -o "$RUNNER_TEMP/agent-plugins/plugin.schema.json"
+          curl -fsSL https://agent-plugins.org/schemas/1.0.0/mcp.schema.json -o "$RUNNER_TEMP/agent-plugins/mcp.schema.json"
+
+      - name: plugin.json and mcp.json match the Agent Plugins spec
+        run: |
+          npx -y -p ajv-cli@5 ajv validate --spec=draft2020 --strict=false -s "$RUNNER_TEMP/agent-plugins/plugin.schema.json" -d plugin.json
+          npx -y -p ajv-cli@5 ajv validate --spec=draft2020 --strict=false -s "$RUNNER_TEMP/agent-plugins/mcp.schema.json" -d mcp.json
+
+      - name: Claude Code plugin manifests are consistent
+        run: |
+          node -e '
+            const fs = require("fs");
+            const read = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
+            const portable = read("plugin.json");
+            const claude = read(".claude-plugin/plugin.json");
+            const market = read(".claude-plugin/marketplace.json");
+            read(".mcp.json");
+            const entry = market.plugins.find((p) => p.name === claude.name);
+            const fail = (m) => { console.error(m); process.exit(1); };
+            if (claude.name !== portable.name) fail("plugin names differ between plugin.json and .claude-plugin/plugin.json");
+            if (!entry) fail("marketplace.json does not list the plugin");
+            if (entry.version !== claude.version || claude.version !== portable.version) fail("plugin versions differ");
+            console.log("plugin manifests consistent");
+          '
+
+      - name: No em-dashes in published copy
+        run: |
+          if grep -rnP '\x{2014}' --include='*.md' --include='*.json' .; then
+            echo "Replace em-dashes with plain punctuation." >&2
+            exit 1
+          fi

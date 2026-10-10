@@ -1,0 +1,157 @@
+{
+  "$schema": "./schema/discovery.schema.json",
+  "version": 1,
+  "organization": {
+    "name": "Linkbreakers",
+    "url": "https://linkbreakers.com",
+    "logo": "https://linkbreakers.com/linkbreakers-symbol.svg",
+    "description": "Lead capture infrastructure for the physical world. Every QR code or link runs a workflow that turns an anonymous scan into an identified visitor, available through an API, SDKs, a CLI and an MCP server.",
+    "contactEmail": "support@linkbreakers.com",
+    "sameAs": [
+      "https://github.com/linkbreakers-com",
+      "https://www.linkedin.com/company/linkbreakers/",
+      "https://www.instagram.com/linkbreakers/"
+    ]
+  },
+  "mcpServers": [
+    {
+      "id": "product",
+      "name": "com.linkbreakers/mcp",
+      "title": "Linkbreakers MCP",
+      "description": "Create links, QR codes and workflows, and read visitors and analytics in your workspace.",
+      "url": "https://mcp.linkbreakers.com",
+      "transport": "streamable-http",
+      "auth": "oauth2",
+      "serverCardUrl": "https://mcp.linkbreakers.com/server-card",
+      "registryUrl": "https://registry.modelcontextprotocol.io/v0/servers?search=com.linkbreakers/mcp",
+      "docsUrl": "https://linkbreakers.com/help/article/mcp-server-setup"
+    },
+    {
+      "id": "docs",
+      "name": "com.linkbreakers/docs-mcp",
+      "title": "Linkbreakers Docs MCP",
+      "description": "Search and read the Linkbreakers help center and developer docs. No sign-in required.",
+      "url": "https://linkbreakers.com/mcp",
+      "transport": "streamable-http",
+      "auth": "none",
+      "serverCardUrl": "https://linkbreakers.com/mcp/server-card",
+      "docsUrl": "https://linkbreakers.com/mcp"
+    }
+  ],
+  "apis": [
+    {
+      "id": "rest",
+      "title": "Linkbreakers API",
+      "description": "REST API for links, QR codes, workflow steps, visitors, events, analytics, webhooks and custom domains. Bearer auth with a workspace API token.",
+      "baseUrl": "https://api.linkbreakers.com",
+      "openapiUrl": "https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json",
+      "docsUrl": "https://linkbreakers.com/help/api",
+      "authDocsUrl": "https://linkbreakers.com/auth.md",
+      "protectedResourceMetadataUrl": "https://api.linkbreakers.com/.well-known/oauth-protected-resource"
+    }
+  ],
+  "cli": {
+    "name": "linkbreakers",
+    "repo": "https://github.com/linkbreakers-com/linkbreakers-cli",
+    "docsUrl": "https://linkbreakers.com/cli",
+    "install": {
+      "homebrew": "brew install linkbreakers-com/tap/linkbreakers",
+      "npm": "npm install -g linkbreakers-cli",
+      "script": "curl -fsSL https://cli.linkbreakers.com/install.sh | bash"
+    }
+  },
+  "sdks": [
+    {
+      "language": "typescript",
+      "package": "linkbreakers",
+      "registry": "npm",
+      "registryUrl": "https://www.npmjs.com/package/linkbreakers",
+      "install": "npm install linkbreakers",
+      "repo": "https://github.com/linkbreakers-com/linkbreakers-typescript",
+      "docsUrl": "https://linkbreakers.com/sdk/typescript"
+    },
+    {
+      "language": "python",
+      "package": "linkbreakers",
+      "registry": "pypi",
+      "registryUrl": "https://pypi.org/project/linkbreakers/",
+      "install": "pip install linkbreakers",
+      "repo": "https://github.com/linkbreakers-com/linkbreakers-python",
+      "docsUrl": "https://linkbreakers.com/sdk/python"
+    },
+    {
+      "language": "go",
+      "package": "github.com/linkbreakers-com/linkbreakers-go",
+      "registry": "go",
+      "registryUrl": "https://pkg.go.dev/github.com/linkbreakers-com/linkbreakers-go",
+      "install": "go get github.com/linkbreakers-com/linkbreakers-go",
+      "repo": "https://github.com/linkbreakers-com/linkbreakers-go",
+      "docsUrl": "https://linkbreakers.com/sdk/go"
+    },
+    {
+      "language": "java",
+      "package": "com.linkbreakers:linkbreakers-sdk",
+      "registry": "maven",
+      "registryUrl": "https://central.sonatype.com/artifact/com.linkbreakers/linkbreakers-sdk",
+      "install": "com.linkbreakers:linkbreakers-sdk",
+      "repo": "https://github.com/linkbreakers-com/linkbreakers-java",
+      "docsUrl": "https://linkbreakers.com/sdk/java"
+    },
+    {
+      "language": "rust",
+      "package": "linkbreakers",
+      "registry": "crates",
+      "registryUrl": "https://crates.io/crates/linkbreakers",
+      "install": "cargo add linkbreakers",
+      "repo": "https://github.com/linkbreakers-com/linkbreakers-rust",
+      "docsUrl": "https://linkbreakers.com/sdk/rust"
+    }
+  ],
+  "docs": {
+    "llmsTxt": "https://linkbreakers.com/llms.txt",
+    "llmsFullTxt": null,
+    "helpCenter": "https://linkbreakers.com/help"
+  },
+  "skills": [
+    {
+      "name": "build-lead-capture-workflow",
+      "description": "Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, redirects) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.",
+      "path": "skills/build-lead-capture-workflow/SKILL.md"
+    },
+    {
+      "name": "connect-linkbreakers-mcp",
+      "description": "Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.",
+      "path": "skills/connect-linkbreakers-mcp/SKILL.md"
+    },
+    {
+      "name": "create-tracked-qr-code",
+      "description": "Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants to shorten a URL with scan tracking, or wants to change where an existing QR code points without reprinting it.",
+      "path": "skills/create-tracked-qr-code/SKILL.md"
+    },
+    {
+      "name": "identify-visitors-on-your-site",
+      "description": "Connect a QR code scan to what the same person does later on the user's own website or app by forwarding the Linkbreakers lbid through the redirect and calling the identify API, so signups, purchases and profile data merge into one Linkbreakers visitor. Use when the user wants offline-to-online attribution, wants to know which QR code drove a signup or sale, or wants to enrich Linkbreakers visitors from their own product.",
+      "path": "skills/identify-visitors-on-your-site/SKILL.md"
+    },
+    {
+      "name": "manage-custom-domains",
+      "description": "Connect a custom (white-label) domain such as qr.example.com to a Linkbreakers workspace, get the exact DNS records to add, check verification and certificate status, and serve links and QR codes from it. Use when the user wants branded short links, wants QR codes to show their own domain instead of Linkbreakers, or asks why a custom domain is pending, not working or expiring.",
+      "path": "skills/manage-custom-domains/SKILL.md"
+    },
+    {
+      "name": "read-visitors-and-leads",
+      "description": "Read, filter, sort and export the leads (visitors) a Linkbreakers workspace has captured from QR code scans and forms, including their custom attributes, scan history and journey through a workflow. Use when the user asks who scanned a QR code, wants a list or CSV of leads, wants leads filtered by answers such as budget or interest, wants a lead's full history, or wants funnel and drop-off numbers for a link.",
+      "path": "skills/read-visitors-and-leads/SKILL.md"
+    },
+    {
+      "name": "send-leads-to-webhooks",
+      "description": "Push Linkbreakers scans and captured leads to another system in real time with webhooks, and write the receiving endpoint. Use when the user wants new QR code leads in their CRM, Slack, a database, Zapier, Make or their own backend as soon as someone scans or submits a form, or asks what a Linkbreakers webhook payload looks like.",
+      "path": "skills/send-leads-to-webhooks/SKILL.md"
+    },
+    {
+      "name": "use-linkbreakers-cli",
+      "description": "Install, authenticate and drive the official linkbreakers command line tool to manage links, QR codes, directories and custom domains, or call any Linkbreakers API endpoint from a shell, script or CI job. Use when the user wants to automate Linkbreakers from the terminal, a cron job or GitHub Actions, prefers shell commands over writing SDK code, or asks how to install the Linkbreakers CLI.",
+      "path": "skills/use-linkbreakers-cli/SKILL.md"
+    }
+  ]
+}

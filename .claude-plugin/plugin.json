@@ -1,0 +1,14 @@
+{
+  "name": "linkbreakers",
+  "version": "1.0.0",
+  "description": "Linkbreakers skills plus the hosted Linkbreakers MCP server: tracked QR codes, lead capture workflows, visitors, webhooks and custom domains.",
+  "author": {
+    "name": "Linkbreakers",
+    "email": "support@linkbreakers.com",
+    "url": "https://linkbreakers.com"
+  },
+  "homepage": "https://linkbreakers.com",
+  "repository": "https://github.com/linkbreakers-com/agent-skills",
+  "license": "MIT",
+  "keywords": ["qr-code", "lead-capture", "mcp", "agent-skills"]
+}

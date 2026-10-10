@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "linkbreakers": {
+      "type": "http",
+      "url": "https://mcp.linkbreakers.com"
+    },
+    "linkbreakers-docs": {
+      "type": "http",
+      "url": "https://linkbreakers.com/mcp"
+    }
+  }
+}

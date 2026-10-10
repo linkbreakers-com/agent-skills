@@ -1,0 +1,21 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Capture leads",
+      "description": "Create tracked QR codes and the workflows that turn scans into identified visitors.",
+      "skills": ["create-tracked-qr-code", "build-lead-capture-workflow", "manage-custom-domains"]
+    },
+    {
+      "title": "Use the leads",
+      "description": "Read, export, push and enrich the visitors your QR codes capture.",
+      "skills": ["read-visitors-and-leads", "send-leads-to-webhooks", "identify-visitors-on-your-site"]
+    },
+    {
+      "title": "Tooling",
+      "description": "Drive Linkbreakers from a terminal or an MCP-capable assistant.",
+      "skills": ["use-linkbreakers-cli", "connect-linkbreakers-mcp"]
+    }
+  ]
+}

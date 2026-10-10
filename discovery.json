@@ -7,6 +7,12 @@
     "logo": "https://linkbreakers.com/linkbreakers-symbol.svg",
     "description": "Lead capture infrastructure for the physical world. Every QR code or link runs a workflow that turns an anonymous scan into an identified visitor, available through an API, SDKs, a CLI and an MCP server.",
     "contactEmail": "support@linkbreakers.com",
+    "address": {
+      "streetAddress": "30B Rue de l'Or",
+      "addressLocality": "Gujan-Mestras",
+      "postalCode": "33470",
+      "addressCountry": "FR"
+    },
     "sameAs": [
       "https://github.com/linkbreakers-com",
       "https://www.linkedin.com/company/linkbreakers/",

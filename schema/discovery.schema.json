@@ -19,7 +19,19 @@
         "logo": { "$ref": "#/$defs/httpsUrl" },
         "description": { "type": "string", "minLength": 1 },
         "contactEmail": { "type": "string", "format": "email" },
-        "sameAs": { "type": "array", "items": { "$ref": "#/$defs/httpsUrl" }, "uniqueItems": true }
+        "sameAs": { "type": "array", "items": { "$ref": "#/$defs/httpsUrl" }, "uniqueItems": true },
+        "address": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["streetAddress", "addressLocality", "postalCode", "addressCountry"],
+          "properties": {
+            "streetAddress": { "type": "string", "minLength": 1 },
+            "addressLocality": { "type": "string", "minLength": 1 },
+            "addressRegion": { "type": "string", "minLength": 1 },
+            "postalCode": { "type": "string", "minLength": 1 },
+            "addressCountry": { "type": "string", "minLength": 2 }
+          }
+        }
       }
     },
     "mcpServers": {

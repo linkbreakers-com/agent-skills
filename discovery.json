@@ -29,7 +29,7 @@
       "transport": "streamable-http",
       "auth": "oauth2",
       "serverCardUrl": "https://mcp.linkbreakers.com/server-card",
-      "registryUrl": "https://registry.modelcontextprotocol.io/v0/servers?search=com.linkbreakers/mcp",
+      "registryUrl": "https://registry.modelcontextprotocol.io/v0/servers/com.linkbreakers%2Fmcp/versions/latest",
       "docsUrl": "https://linkbreakers.com/help/article/mcp-server-setup",
       "packages": [
         {

@@ -6,6 +6,17 @@
     "url": "https://linkbreakers.com",
     "logo": "https://linkbreakers.com/linkbreakers-symbol.svg",
     "description": "Lead capture infrastructure for the physical world. Every QR code or link runs a workflow that turns an anonymous scan into an identified visitor, available through an API, SDKs, a CLI and an MCP server.",
+    "categories": [
+      "Infrastructure",
+      "Developer Tools"
+    ],
+    "tags": [
+      "lead-capture",
+      "api",
+      "qr-codes",
+      "webhooks",
+      "mcp"
+    ],
     "contactEmail": "support@linkbreakers.com",
     "address": {
       "streetAddress": "30B Rue de l'Or",

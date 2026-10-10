@@ -18,6 +18,20 @@
         "url": { "$ref": "#/$defs/httpsUrl" },
         "logo": { "$ref": "#/$defs/httpsUrl" },
         "description": { "type": "string", "minLength": 1 },
+        "categories": {
+          "description": "Directory categories, most specific first, for catalogs and agent-readiness scanners that classify sites (e.g. Infrastructure, Developer Tools).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tags": {
+          "description": "Lowercase, hyphenated keywords for filtering and faceting.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+        },
         "contactEmail": { "type": "string", "format": "email" },
         "sameAs": { "type": "array", "items": { "$ref": "#/$defs/httpsUrl" }, "uniqueItems": true },
         "address": {

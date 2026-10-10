@@ -51,7 +51,32 @@
           "auth": { "enum": ["oauth2", "bearer", "none"] },
           "serverCardUrl": { "$ref": "#/$defs/httpsUrl" },
           "registryUrl": { "$ref": "#/$defs/httpsUrl" },
-          "docsUrl": { "$ref": "#/$defs/httpsUrl" }
+          "docsUrl": { "$ref": "#/$defs/httpsUrl" },
+          "ui": {
+            "description": "MCP Apps (io.modelcontextprotocol/ui): the ui:// views the server renders for tool results.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["extension", "mimeType", "docsUrl", "views"],
+            "properties": {
+              "extension": { "const": "io.modelcontextprotocol/ui" },
+              "mimeType": { "type": "string", "minLength": 1 },
+              "docsUrl": { "$ref": "#/$defs/httpsUrl" },
+              "views": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["uri", "title", "tools"],
+                  "properties": {
+                    "uri": { "type": "string", "pattern": "^ui://" },
+                    "title": { "type": "string", "minLength": 1 },
+                    "tools": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -125,6 +150,32 @@
         "llmsTxt": { "$ref": "#/$defs/httpsUrl" },
         "llmsFullTxt": { "oneOf": [{ "$ref": "#/$defs/httpsUrl" }, { "type": "null" }] },
         "helpCenter": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "sandbox": {
+      "description": "A test mode with its own credentials, separate from live data.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "createEndpoint", "listEndpoint", "tokenPrefix", "lifetimeDays", "maxPerWorkspace", "billed", "monthlyLimits", "docsUrl"],
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "createEndpoint": { "$ref": "#/$defs/httpsUrl" },
+        "listEndpoint": { "$ref": "#/$defs/httpsUrl" },
+        "tokenPrefix": { "type": "string", "minLength": 1 },
+        "lifetimeDays": { "type": "integer", "minimum": 1 },
+        "maxPerWorkspace": { "type": "integer", "minimum": 1 },
+        "billed": { "type": "boolean" },
+        "monthlyLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["apiCalls", "countedScans", "links"],
+          "properties": {
+            "apiCalls": { "type": "integer", "minimum": 0 },
+            "countedScans": { "type": "integer", "minimum": 0 },
+            "links": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "docsUrl": { "$ref": "#/$defs/httpsUrl" }
       }
     },
     "skills": {

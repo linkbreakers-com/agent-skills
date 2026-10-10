@@ -30,7 +30,36 @@
       "auth": "oauth2",
       "serverCardUrl": "https://mcp.linkbreakers.com/server-card",
       "registryUrl": "https://registry.modelcontextprotocol.io/v0/servers?search=com.linkbreakers/mcp",
-      "docsUrl": "https://linkbreakers.com/help/article/mcp-server-setup"
+      "docsUrl": "https://linkbreakers.com/help/article/mcp-server-setup",
+      "ui": {
+        "extension": "io.modelcontextprotocol/ui",
+        "mimeType": "text/html;profile=mcp-app",
+        "docsUrl": "https://linkbreakers.com/help/article/mcp-apps-interactive-ui",
+        "views": [
+          {
+            "uri": "ui://linkbreakers/link-card.html",
+            "title": "Link card",
+            "tools": [
+              "links_create",
+              "links_get"
+            ]
+          },
+          {
+            "uri": "ui://linkbreakers/visitors-card.html",
+            "title": "Visitors",
+            "tools": [
+              "visitors_list"
+            ]
+          },
+          {
+            "uri": "ui://linkbreakers/workspace-metrics.html",
+            "title": "Workspace metrics",
+            "tools": [
+              "metrics_workspace"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "docs",
@@ -119,6 +148,21 @@
     "llmsTxt": "https://linkbreakers.com/llms.txt",
     "llmsFullTxt": null,
     "helpCenter": "https://linkbreakers.com/help"
+  },
+  "sandbox": {
+    "description": "Sandbox workspaces: separate, API-only test workspaces created from a live workspace, reached with their own lb_test_ tokens, never billed, and deleted after 30 days.",
+    "createEndpoint": "https://api.linkbreakers.com/v1/sandboxes",
+    "listEndpoint": "https://api.linkbreakers.com/v1/sandboxes",
+    "tokenPrefix": "lb_test_",
+    "lifetimeDays": 30,
+    "maxPerWorkspace": 3,
+    "billed": false,
+    "monthlyLimits": {
+      "apiCalls": 1000,
+      "countedScans": 500,
+      "links": 50
+    },
+    "docsUrl": "https://linkbreakers.com/help/article/sandbox-test-environment"
   },
   "skills": [
     {

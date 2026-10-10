@@ -51,7 +51,7 @@ This repository is an [Agent Plugin](https://agent-plugins.org/specification): `
 | Docs MCP server (no auth) | `https://linkbreakers.com/mcp` |
 | REST API | `https://api.linkbreakers.com`, reference at https://linkbreakers.com/help/api |
 | OpenAPI spec | https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json |
-| CLI | `brew install linkbreakers-com/tap/linkbreakers` or `npm install -g linkbreakers-cli`, docs at https://linkbreakers.com/cli |
+| CLI | `brew install linkbreakers-com/tap/linkbreakers` (tap: https://github.com/linkbreakers-com/homebrew-tap), docs at https://linkbreakers.com/cli |
 | SDKs | TypeScript (`npm i linkbreakers`), Python (`pip install linkbreakers`), Go, Java, Rust: https://linkbreakers.com/help/article/linkbreakers-developer-ecosystem-overview |
 
 ## discovery.json

@@ -52,6 +52,24 @@
           "serverCardUrl": { "$ref": "#/$defs/httpsUrl" },
           "registryUrl": { "$ref": "#/$defs/httpsUrl" },
           "docsUrl": { "$ref": "#/$defs/httpsUrl" },
+          "packages": {
+            "description": "Packages that run this server locally over stdio, for clients that cannot connect to a remote server.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["registry", "package", "transport", "command", "registryUrl"],
+              "properties": {
+                "registry": { "enum": ["npm"] },
+                "package": { "type": "string", "minLength": 1 },
+                "transport": { "const": "stdio" },
+                "command": { "type": "string", "minLength": 1 },
+                "registryUrl": { "$ref": "#/$defs/httpsUrl" },
+                "repo": { "$ref": "#/$defs/httpsUrl" }
+              }
+            }
+          },
           "ui": {
             "description": "MCP Apps (io.modelcontextprotocol/ui): the ui:// views the server renders for tool results.",
             "type": "object",

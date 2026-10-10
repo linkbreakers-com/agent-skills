@@ -31,6 +31,16 @@
       "serverCardUrl": "https://mcp.linkbreakers.com/server-card",
       "registryUrl": "https://registry.modelcontextprotocol.io/v0/servers?search=com.linkbreakers/mcp",
       "docsUrl": "https://linkbreakers.com/help/article/mcp-server-setup",
+      "packages": [
+        {
+          "registry": "npm",
+          "package": "linkbreakers-mcp",
+          "transport": "stdio",
+          "command": "npx -y linkbreakers-mcp",
+          "registryUrl": "https://www.npmjs.com/package/linkbreakers-mcp",
+          "repo": "https://github.com/linkbreakers-com/linkbreakers-mcp"
+        }
+      ],
       "ui": {
         "extension": "io.modelcontextprotocol/ui",
         "mimeType": "text/html;profile=mcp-app",
@@ -91,10 +101,12 @@
     "docsUrl": "https://linkbreakers.com/cli",
     "install": {
       "homebrew": "brew install linkbreakers-com/tap/linkbreakers",
+      "npm": "npm install -g linkbreakers-cli",
       "script": "curl -fsSL https://cli.linkbreakers.com/install.sh | bash"
     },
     "registryUrls": {
-      "homebrew": "https://github.com/linkbreakers-com/homebrew-tap"
+      "homebrew": "https://github.com/linkbreakers-com/homebrew-tap",
+      "npm": "https://www.npmjs.com/package/linkbreakers-cli"
     }
   },
   "sdks": [

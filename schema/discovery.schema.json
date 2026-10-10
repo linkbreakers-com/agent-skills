@@ -91,6 +91,11 @@
             "npm": { "type": "string" },
             "script": { "type": "string" }
           }
+        },
+        "registryUrls": {
+          "type": "object",
+          "description": "Registry page of each install method, keyed like install.",
+          "additionalProperties": { "$ref": "#/$defs/httpsUrl" }
         }
       }
     },

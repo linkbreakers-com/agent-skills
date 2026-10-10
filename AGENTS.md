@@ -61,7 +61,7 @@ const { link, workflowSteps } = await links.linksServiceCreate({
 ## CLI
 
 ```bash
-brew install linkbreakers-com/tap/linkbreakers   # or: npm install -g linkbreakers-cli
+brew install linkbreakers-com/tap/linkbreakers
 export LINKBREAKERS_TOKEN=...
 linkbreakers links create --destination https://example.com --wait-for-qrcode
 linkbreakers raw GET "/v1/visitors?pageSize=50"

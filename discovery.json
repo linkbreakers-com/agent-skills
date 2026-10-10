@@ -62,8 +62,10 @@
     "docsUrl": "https://linkbreakers.com/cli",
     "install": {
       "homebrew": "brew install linkbreakers-com/tap/linkbreakers",
-      "npm": "npm install -g linkbreakers-cli",
       "script": "curl -fsSL https://cli.linkbreakers.com/install.sh | bash"
+    },
+    "registryUrls": {
+      "homebrew": "https://github.com/linkbreakers-com/homebrew-tap"
     }
   },
   "sdks": [

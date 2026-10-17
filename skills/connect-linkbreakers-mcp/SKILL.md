@@ -88,7 +88,7 @@ Workflow tips: after creating steps, always run `workflow_steps_validate` and co
 
 Media tips:
 - Bring a file into the media library first, then reference it by id:
-  - `media_import` fetches it from an https URL (or an Assistant chat attachment);
+  - `media_import` fetches it from an https URL;
   - `media_create` takes it inline, base64, up to 3 MB;
   - larger files go through `media_upload_create`, a PUT of the bytes to the returned `upload_url`, then `media_upload_complete`.
 - Limits by kind: images (PNG, JPEG, WebP, SVG) up to 10 MB, PDFs up to 25 MB, MP4 videos up to 50 MB. Every upload counts toward the workspace's storage allowance.

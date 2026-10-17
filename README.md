@@ -32,7 +32,7 @@ This repository is an [Agent Plugin](https://agent-plugins.org/specification): `
 
 | Skill | Use it to |
 | --- | --- |
-| [create-tracked-qr-code](skills/create-tracked-qr-code/SKILL.md) | Create a link with a dynamic, tracked QR code and change its destination later |
+| [create-tracked-qr-code](skills/create-tracked-qr-code/SKILL.md) | Create a link with a dynamic, tracked QR code (or one that opens a PDF, image or video) and change its destination later |
 | [build-lead-capture-workflow](skills/build-lead-capture-workflow/SKILL.md) | Add forms, conditions and pages to a link and wire every branch |
 | [read-visitors-and-leads](skills/read-visitors-and-leads/SKILL.md) | List, filter, sort and export captured visitors, events and funnels |
 | [send-leads-to-webhooks](skills/send-leads-to-webhooks/SKILL.md) | Push scans and leads to a CRM or backend in real time |

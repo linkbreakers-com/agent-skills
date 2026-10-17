@@ -2,7 +2,7 @@
 
 Instructions for AI coding agents integrating with Linkbreakers.
 
-Linkbreakers is lead capture infrastructure for the physical world. Every QR code or link runs a **workflow** (forms, conditions, password gates, multi-link pages, contact cards, redirects) that turns an anonymous scan into an identified **visitor** carrying the attributes the business chose to collect. Leads leave through the REST API, webhooks, five SDKs, a CLI and an MCP server.
+Linkbreakers is lead capture infrastructure for the physical world. Every QR code or link runs a **workflow** (forms, conditions, password gates, multi-link pages, contact cards, redirects, opening a PDF, image or video) that turns an anonymous scan into an identified **visitor** carrying the attributes the business chose to collect. Leads leave through the REST API, webhooks, five SDKs, a CLI and an MCP server.
 
 ## Pick a surface
 
@@ -33,6 +33,7 @@ Read the OpenAPI spec before calling an endpoint you have not used. Do not guess
 - **Visitor**: a person resolved across scans. Reserved fields `$email`, `$phone`, `$firstName`, `$lastName`; any other key is a typed custom attribute.
 - **Event**: one scan, with traces of the steps it went through and its journey progress.
 - **Custom domain**: white-label hostname for links; must reach `STATUS_ACTIVE` before use.
+- **Media**: a PDF, image or MP4 video in the workspace's media library (`/v1/media`), counted against the plan's storage. An `EVENT_ACTION_OPEN_MEDIA` exit step opens one when a visitor scans (`POST /v1/links/open-media` creates such a link). Images of at most 3 MB can also be QR code logos and page theme covers, badges or footer logos.
 
 ## SDKs
 

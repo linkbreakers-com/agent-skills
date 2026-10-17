@@ -35,7 +35,7 @@
       "id": "product",
       "name": "com.linkbreakers/mcp",
       "title": "Linkbreakers MCP",
-      "description": "Create links, QR codes and workflows, and read visitors and analytics in your workspace.",
+      "description": "Create links, QR codes, workflows and media, and read visitors and analytics in your workspace.",
       "url": "https://mcp.linkbreakers.com",
       "transport": "streamable-http",
       "auth": "oauth2",
@@ -98,7 +98,7 @@
     {
       "id": "rest",
       "title": "Linkbreakers API",
-      "description": "REST API for links, QR codes, workflow steps, visitors, events, analytics, webhooks and custom domains. Bearer auth with a workspace API token.",
+      "description": "REST API for links, QR codes, workflow steps, media (PDFs, images, videos), visitors, events, analytics, webhooks and custom domains. Bearer auth with a workspace API token.",
       "baseUrl": "https://api.linkbreakers.com",
       "openapiUrl": "https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json",
       "docsUrl": "https://linkbreakers.com/help/api",
@@ -190,17 +190,17 @@
   "skills": [
     {
       "name": "build-lead-capture-workflow",
-      "description": "Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, redirects) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.",
+      "description": "Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.",
       "path": "skills/build-lead-capture-workflow/SKILL.md"
     },
     {
       "name": "connect-linkbreakers-mcp",
-      "description": "Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.",
+      "description": "Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, media, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.",
       "path": "skills/connect-linkbreakers-mcp/SKILL.md"
     },
     {
       "name": "create-tracked-qr-code",
-      "description": "Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants to shorten a URL with scan tracking, or wants to change where an existing QR code points without reprinting it.",
+      "description": "Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, or wants to change where an existing QR code points without reprinting it.",
       "path": "skills/create-tracked-qr-code/SKILL.md"
     },
     {

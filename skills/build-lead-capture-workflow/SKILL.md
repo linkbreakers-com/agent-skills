@@ -1,10 +1,10 @@
 ---
 name: build-lead-capture-workflow
-description: Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, redirects) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.
+description: Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Build a lead capture workflow
@@ -35,7 +35,12 @@ All REST calls use `Authorization: Bearer <workspace token>` against `https://ap
 
 - Interaction, one branch `next`: `EVENT_ACTION_FORM_SUBMIT` (payload `form`), `EVENT_ACTION_PASSWORD_VERIFY` (`password`), `EVENT_ACTION_MESSAGE_PAGE` (`messagePage`, one button or a timer).
 - Composite, one branch per button/option/range plus `else` on conditions: `EVENT_ACTION_MULTI_LINK` (`multiLink`, each button continues into more workflow), `EVENT_ACTION_COUNTRY_CONDITION`, `EVENT_ACTION_VISIT_TYPE_CONDITION` (first vs returning), `EVENT_ACTION_DEVICE_TYPE_CONDITION`, `EVENT_ACTION_DEVICE_PLATFORM_CONDITION`, `EVENT_ACTION_DEVICE_BROWSER_CONDITION`, `EVENT_ACTION_DEVICE_BRAND_CONDITION`, `EVENT_ACTION_DEVICE_ACTOR_CONDITION`, `EVENT_ACTION_DAY_OF_WEEK_CONDITION`, `EVENT_ACTION_TIME_OF_DAY_CONDITION`, `EVENT_ACTION_DAY_OF_MONTH_CONDITION`, `EVENT_ACTION_SPECIFIC_DATE_CONDITION`, `EVENT_ACTION_VISITOR_DATA_CONDITION` (route on profile data already captured).
-- Exit, no branches: `EVENT_ACTION_CLIENT_REDIRECT` (`clientRedirect`), `EVENT_ACTION_THANK_YOU_PAGE` (`thankYouPage`, `title` required), `EVENT_ACTION_CONTACT_CARD` (`vcard`), `EVENT_ACTION_SOCIAL_LINKS_PAGE` (`socialLinks`, buttons that leave for external URLs).
+- Exit, no branches:
+  - `EVENT_ACTION_CLIENT_REDIRECT` (`clientRedirect`).
+  - `EVENT_ACTION_THANK_YOU_PAGE` (`thankYouPage`, `title` required).
+  - `EVENT_ACTION_CONTACT_CARD` (`vcard`). Set `phoneSmsEnabled: true` to add a "Send a text" action next to the phone number. `saveButtonEnabled` shows the "Add to contacts" button; it defaults to true.
+  - `EVENT_ACTION_SOCIAL_LINKS_PAGE` (`socialLinks`, buttons that leave for external URLs).
+  - `EVENT_ACTION_OPEN_MEDIA` (`openMedia: {"mediaId": "..."}`). Opens a PDF, an image (PNG, JPEG, WebP, SVG) or an MP4 video from the workspace's media library, and the file URL is signed at scan time. The media must already be in the library (see "Opening a file" below).
 
 The payload key matches the step type: a form step sends `{"payload": {"form": {...}}}`. Read the exact payload schemas in the OpenAPI spec under `WorkflowStepPayload`.
 
@@ -81,6 +86,25 @@ The payload key matches the step type: a form step sends `{"payload": {"form": {
 3. Connect **every** branch, including `else` on conditions, with `PUT .../branches/{branchId}/connection` and `{"nextStepId": "<target step id>"}`. Connecting is idempotent.
 4. Validate. Unconnected branches show up as issues.
 
+## Back buttons ("Back to menu")
+
+Page steps can show a secondary button that returns the visitor to the previous page, exactly like the browser's back button. Use it on sub-pages reached from a multi-link menu instead of wiring a connection back to the menu. The page steps are message page, multi-link, contact card, social links, form, password and thank you page. `rendersPage: true` on a step tells you it is one.
+
+`backButton` is a top-level field of the create or update request, not part of `payload`:
+
+```json
+{"backButton": {"enabled": true, "label": "Back to menu"}}
+```
+
+The label is up to 40 characters and defaults to "Back". The button hides itself when there is no previous page, such as on the first page right after a scan.
+
+## Opening a file (PDF, image, video)
+
+1. Get the file into the media library. Use `media_list` (filter by kind) for one already there, `media_import` (`POST /v1/media:import`) to fetch it from an https URL, `media_create` (`POST /v1/media`, base64, up to 3 MB), or a direct upload for larger files (`media_upload_create`, PUT the bytes, `media_upload_complete`). Limits: images 10 MB, PDFs 25 MB, MP4 videos 50 MB, all within the workspace's storage allowance.
+2. Create an `EVENT_ACTION_OPEN_MEDIA` step with its `mediaId` and connect a branch to it, or for a link that only opens the file use `POST /v1/links/open-media` (MCP `links_create_open_media`).
+3. For several files, build a multi-link menu with one button per file, each connected to its own Open media step.
+4. Swap the file later by updating the step's `mediaId`. The link and the printed QR code stay the same.
+
 ## Saving data without a form
 
 Any step can write attributes to the visitor through `attributeCapture`:
@@ -101,6 +125,8 @@ Templates: `{{now}}`, `{{link.name}}`, `{{link.metadata.<key>}}`, and on multi-l
 
 - Never leave a branch unconnected; always finish with validate.
 - Exit steps end the journey. Do not try to connect anything out of them.
+- For a "Back to menu" button, prefer `backButton` on the sub-page. Connect a branch back to the menu only when the page must always lead there or the click must be recorded as a journey step.
+- A media item still used by an Open media step cannot be deleted. Point the step at other media first.
 - Do not invent step ids. Use the ids returned by create/list calls.
 - To push captured leads somewhere else, add a webhook (`send-leads-to-webhooks` skill).
 

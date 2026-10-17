@@ -4,7 +4,7 @@ description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Cont
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Connect the Linkbreakers MCP server
@@ -91,6 +91,8 @@ Media tips:
   - `media_import` fetches it from an https URL;
   - `media_create` takes it inline, base64, up to 3 MB;
   - larger files go through `media_upload_create`, a PUT of the bytes to the returned `upload_url`, then `media_upload_complete`.
+- A workspace holds each file once. Uploading or importing bytes the library already has fails with HTTP 409 `MEDIA_ALREADY_EXISTS`; the error's `metadata.existingMediaId` and `metadata.existingFileName` name that media. Use that id and carry on; do not retry or upload the file again.
+- Pass `sha256` (the file's SHA-256 as 64 hex characters) to `media_upload_create` when you can: a file already in the library is then refused before any bytes travel. Storage also refuses bytes that do not match it, so the PUT must send every header in `upload_headers`, `x-amz-checksum-sha256` included. Without `sha256` the duplicate is caught by `media_upload_complete` instead, and the upload is discarded.
 - Limits by kind: images (PNG, JPEG, WebP, SVG) up to 10 MB, PDFs up to 25 MB, MP4 videos up to 50 MB. Every upload counts toward the workspace's storage allowance.
 - A media item has a kind only. `uploaded_from` says where it was uploaded and is informational; `references` lists where it is used.
 - Use media in these places:
@@ -98,6 +100,7 @@ Media tips:
   - `qrcodedesigns_update` with `central_image_media_id` sets a QR code logo.
   - `page_themes_update` sets the background cover, badge or footer logo (`footer_logo_enabled` plus `footer_logo`).
 - The QR code logo, background cover, badge and footer logo take an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`.
+- `media_delete` refuses media an Open media step opens or a page theme shows (`MEDIA_IN_USE`, naming the links and templates): point those at other media first. A QR code keeps its own copy of its logo, so deleting a logo only clears the design's link to the media.
 - `media_delete` is refused while an Open media step still uses the media.
 
 ## Troubleshooting

@@ -4,7 +4,7 @@ description: Turn a Linkbreakers link or QR code into a lead capture flow by add
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Build a lead capture workflow
@@ -100,7 +100,7 @@ The label is up to 40 characters and defaults to "Back". The button hides itself
 
 ## Opening a file (PDF, image, video)
 
-1. Get the file into the media library. Use `media_list` (filter by kind) for one already there, `media_import` (`POST /v1/media:import`) to fetch it from an https URL, `media_create` (`POST /v1/media`, base64, up to 3 MB), or a direct upload for larger files (`media_upload_create`, PUT the bytes, `media_upload_complete`). Limits: images 10 MB, PDFs 25 MB, MP4 videos 50 MB, all within the workspace's storage allowance.
+1. Get the file into the media library. Use `media_list` (filter by kind) for one already there, `media_import` (`POST /v1/media:import`) to fetch it from an https URL, `media_create` (`POST /v1/media`, base64, up to 3 MB), or a direct upload for larger files (`media_upload_create`, PUT the bytes, `media_upload_complete`). Limits: images 10 MB, PDFs 25 MB, MP4 videos 50 MB, all within the workspace's storage allowance. A workspace holds each file once: a file already in the library fails with HTTP 409 `MEDIA_ALREADY_EXISTS` and names it in `metadata.existingMediaId`, so use that id as the `mediaId`. A direct upload can declare `sha256` (hex) to be refused before any bytes travel.
 2. Create an `EVENT_ACTION_OPEN_MEDIA` step with its `mediaId` and connect a branch to it, or for a link that only opens the file use `POST /v1/links/open-media` (MCP `links_create_open_media`).
 3. For several files, build a multi-link menu with one button per file, each connected to its own Open media step.
 4. Swap the file later by updating the step's `mediaId`. The link and the printed QR code stay the same.

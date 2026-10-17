@@ -4,7 +4,7 @@ description: Create a Linkbreakers link with a dynamic, tracked QR code and get 
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Create a tracked QR code
@@ -97,6 +97,7 @@ The file lives in the workspace's media library, and the link's exit step opens 
    - The file is local and at most 3 MB: `POST /v1/media` with base64 `fileData` and `fileName` (MCP `media_create`).
    - The file is larger: `POST /v1/media/uploads` with `fileName`, `mimeType` and the exact `size` (MCP `media_upload_create`). PUT the bytes to the returned `uploadUrl` with its `uploadHeaders`, then call `POST /v1/media/{id}:complete` (MCP `media_upload_complete`).
    - The file is already uploaded: find it with `GET /v1/media` (MCP `media_list`).
+   - A workspace holds each file once. Any of these calls answers HTTP 409 `MEDIA_ALREADY_EXISTS` for a file already in the library, with the existing media in `metadata.existingMediaId` (and `metadata.existingFileName`). Use that id; it is not a failure. For a direct upload, pass the file's SHA-256 as `sha256` (hex) so the duplicate is refused before the PUT, and send every `uploadHeaders` entry on the PUT, `x-amz-checksum-sha256` included.
 
    Limits: images (PNG, JPEG, WebP, SVG) up to 10 MB, PDFs up to 25 MB, MP4 videos up to 50 MB. Every upload also counts toward the workspace's storage allowance: Free 25 MB, Light 500 MB, Pro 10 GB, custom on Enterprise.
 

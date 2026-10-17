@@ -33,7 +33,7 @@ Read the OpenAPI spec before calling an endpoint you have not used. Do not guess
 - **Visitor**: a person resolved across scans. Reserved fields `$email`, `$phone`, `$firstName`, `$lastName`; any other key is a typed custom attribute.
 - **Event**: one scan, with traces of the steps it went through and its journey progress.
 - **Custom domain**: white-label hostname for links; must reach `STATUS_ACTIVE` before use.
-- **Media**: a PDF, image or MP4 video in the workspace's media library (`/v1/media`), counted against the plan's storage. An `EVENT_ACTION_OPEN_MEDIA` exit step opens one when a visitor scans (`POST /v1/links/open-media` creates such a link). Images of at most 3 MB can also be QR code logos and page theme covers, badges or footer logos.
+- **Media**: a PDF, image or MP4 video in the workspace's media library (`/v1/media`), counted against the plan's storage. An `EVENT_ACTION_OPEN_MEDIA` exit step opens one when a visitor scans (`POST /v1/links/open-media` creates such a link). Images of at most 3 MB can also be QR code logos and page theme covers, badges or footer logos. A media item's file can be replaced in place (`POST /v1/media/{id}/replace-uploads`, `POST /v1/media/{id}/replace:import`), keeping its id so its uses follow; QR code logos keep their own copy and are detached.
 
 ## SDKs
 

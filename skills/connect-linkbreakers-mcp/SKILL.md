@@ -4,7 +4,7 @@ description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Cont
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Connect the Linkbreakers MCP server
@@ -79,7 +79,7 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_check` |
 | QR code styling | `qrcodedesigns_create`, `qrcodedesigns_update`, `qrcodedesigns_apply_template`, `qrtemplates_list`, `qrtemplates_get`, `qrtemplates_create`, `qrtemplates_update`, `qrtemplates_delete`, `qrtemplates_publish` |
 | Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `pagethemetemplates_*`, `pagethemes_matching_template` |
-| Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_delete` |
+| Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
 | Organisation | `directories_*`, `tags_list` |
 
 The live list is whatever the server returns from `tools/list`; prefer it over this table if they differ. Anything not exposed as a tool (webhooks, workspace tokens, members) is available through the REST API.
@@ -102,6 +102,14 @@ Media tips:
 - The QR code logo, background cover, badge and footer logo take an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`.
 - `media_delete` refuses media an Open media step opens or a page theme shows (`MEDIA_IN_USE`, naming the links and templates): point those at other media first. A QR code keeps its own copy of its logo, so deleting a logo only clears the design's link to the media.
 - `media_delete` is refused while an Open media step still uses the media.
+- Replace a media item's file in place, keeping its id, so every Open media step and page theme cover, badge or footer logo using it shows the new file from the next visit:
+  - `media_replace_import` fetches the new file from an https URL in one call;
+  - for a local file, `media_replace_upload_create` (name, MIME type, exact size, `sha256` when you can) returns a `replacement_id` and an `upload_url`; PUT the bytes with every `upload_headers` entry, then call `media_replace_upload_complete` with the id and `replacement_id`.
+  - Read the media with `media_get` first and tell the user every use that will change; confirm before completing, it cannot be undone. The old file is deleted once the new one is in place.
+  - QR code designs keep their own copy of their logo: they never refuse a replacement, keep their current logo and are detached from the media (listed in `detached_references`).
+  - `MEDIA_REPLACE_NOT_ALLOWED` means a use does not accept the new file (a page theme image must be an image of at most 3 MB). The message names each refusing use and why, and `metadata.refusals` is a JSON array of them (`type`, `reason`, `message`, `linkId`, `linkName`, `pageThemeTemplateId`, `pageThemeTemplateName`). Pick another file or point those uses at other media first. Media only Open media steps use may change kind, a PDF for an MP4 video for example.
+  - `MEDIA_ALREADY_EXISTS` means another media item holds the file (`metadata.existingMediaId`): point the uses at that media instead. A file identical to the media's own returns `unchanged: true` and changes nothing.
+  - Only the size difference counts against the storage allowance. A replacement not completed within an hour is discarded and the media keeps its file.
 
 ## Troubleshooting
 

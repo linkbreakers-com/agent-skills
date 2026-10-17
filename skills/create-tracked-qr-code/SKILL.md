@@ -4,7 +4,7 @@ description: Create a Linkbreakers link with a dynamic, tracked QR code and get 
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Create a tracked QR code
@@ -103,13 +103,13 @@ The file lives in the workspace's media library, and the link's exit step opens 
 
 2. Create the link: `POST /v1/links/open-media` with `{"mediaId": "<id>", "name": "Spring menu", "waitForQrcode": true}` (MCP `links_create_open_media`). It takes the same optional fields as `CreateLinkRequest`. Its exit step is an `EVENT_ACTION_OPEN_MEDIA` step, and the file URL is signed at scan time, so the QR code never goes stale.
 
-3. To swap the file later without reprinting, update the Open media step's `mediaId` with `PATCH /v1/links/{linkId}/workflow-steps/{stepId}` and `{"payload": {"openMedia": {"mediaId": "<new id>"}}}` (MCP `workflow_steps_update`).
+3. To swap the file later without reprinting, either point the step at other media with `PATCH /v1/links/{linkId}/workflow-steps/{stepId}` and `{"payload": {"openMedia": {"mediaId": "<new id>"}}}` (MCP `workflow_steps_update`), or replace the media's own file so every link opening it follows: `POST /v1/media/{id}/replace:import` with `{"url": "https://..."}` (MCP `media_replace_import`), or for a local file `POST /v1/media/{id}/replace-uploads` with `fileName`, `mimeType`, `size` and `sha256`, a PUT of the bytes to `uploadUrl` with every `uploadHeaders` entry, then `POST /v1/media/{id}/replace-uploads/{replacementId}:complete` (MCP `media_replace_upload_create`, `media_replace_upload_complete`). A media item only Open media steps open may change kind, a PDF for an MP4 video.
 
 For several files behind one QR code, use a multi-link menu whose buttons each lead to an Open media step (see `build-lead-capture-workflow`).
 
 ### QR code logo from the media library
 
-Upload or import the logo as above. Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcodedesigns_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo.
+Upload or import the logo as above. Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcodedesigns_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo, and replacing the media's file does not change the QR code either: the design keeps its current logo and is detached from the media. To change the logo, set `centralImageMediaId` again.
 
 ## Pitfalls
 

@@ -69,7 +69,7 @@ npx -y linkbreakers-cli visitors list --page-size 50
 npx -y linkbreakers-cli analytics-data get-top-links
 ```
 
-Every API operation is a command, `linkbreakers <service> <operation>`, generated from the OpenAPI spec; `--help` lists its flags and `--data` takes a JSON body. `signup` emails the person a link and a code to claim the workspace; unclaimed, it is deleted after 24 hours, so relay the link and code it prints. With an existing account, use `linkbreakers auth set-token --token <token>` or `LINKBREAKERS_TOKEN` instead. Docs: https://linkbreakers.com/cli and https://github.com/linkbreakers-com/linkbreakers-cli
+Every API operation is a command, `linkbreakers <service> <operation>`, generated from the OpenAPI spec; `--help` lists its flags and `--data` takes a JSON body. `signup` emails the person a link and a code to claim the workspace; the link and code go only to that inbox, never to you, so ask for the person's real address and tell them to open the email; unclaimed, the workspace is deleted after 24 hours. With an existing account, use `linkbreakers auth set-token --token <token>` or `LINKBREAKERS_TOKEN` instead. Docs: https://linkbreakers.com/cli and https://github.com/linkbreakers-com/linkbreakers-cli
 
 ## MCP
 

@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires a shell on macOS, Linux or Windows, Node.js 18+ for npx (or another install method), and network access to api.linkbreakers.com and mcp.linkbreakers.com.
 metadata:
   author: linkbreakers
-  version: "2.0"
+  version: "2.1"
 ---
 
 # Use the Linkbreakers CLI
@@ -14,15 +14,15 @@ The binary is `linkbreakers`. Every API operation is a command, generated from t
 
 ## Start: one command, no account
 
-If no token is configured and the user has no Linkbreakers account yet, ask for their email address, then:
+If no token is configured and the user has no Linkbreakers account yet, ask for their real email address (only that inbox can claim the workspace), then:
 
 ```bash
 npx -y linkbreakers-cli signup --email <their email>
 ```
 
-This creates a free workspace, saves its API token in the CLI config, and emails that address a link and a 6-digit code to claim the workspace. The JSON answer has the workspace id, the token's scopes, and a `claim` block with the link and the code.
+This creates a free workspace, saves its API token in the CLI config, and emails that address a link and a 6-digit code to claim the workspace. You never see the link or the code: they go only to the inbox, so claiming also verifies the address. The JSON answer has the workspace id, the token's scopes, and a `claim` block with the address and the deadline.
 
-Tell the user, in one message: "I created a Linkbreakers workspace for you. Open the link we emailed you (or this one: <verification_uri>) and enter <user_code> to keep it." An unclaimed workspace is deleted with its links and QR codes 24 hours after signup. Until then every command reminds you on stderr; once the user claims it, the saved token is upgraded on its own. `npx -y linkbreakers-cli claim --wait` waits for the claim if you need the extra permissions now.
+Tell the user, in one message: "I created a Linkbreakers workspace for you. Open the email from Linkbreakers within 24 hours to keep it." If it did not arrive, check the address with them and run `npx -y linkbreakers-cli claim --email <address>` to send a new one. An unclaimed workspace is deleted with its links and QR codes 24 hours after signup. Until then every command reminds you on stderr; once the user claims it, the saved token is upgraded on its own. `npx -y linkbreakers-cli claim --wait` waits for the claim if you need the extra permissions now.
 
 If the user already has an account, do not sign up: ask them for a token from https://app.linkbreakers.com/workspace/dashboard/api-tokens, then `linkbreakers auth set-token --token <token>` (or set `LINKBREAKERS_TOKEN`).
 

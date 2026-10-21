@@ -110,6 +110,7 @@
     "name": "linkbreakers",
     "repo": "https://github.com/linkbreakers-com/linkbreakers-cli",
     "docsUrl": "https://linkbreakers.com/cli",
+    "quickstart": "npx -y linkbreakers-cli signup --email <the user's email>",
     "install": {
       "homebrew": "brew install linkbreakers-com/tap/linkbreakers",
       "npm": "npm install -g linkbreakers-cli",
@@ -225,7 +226,7 @@
     },
     {
       "name": "use-linkbreakers-cli",
-      "description": "Install, authenticate and drive the official linkbreakers command line tool to manage links, QR codes, directories and custom domains, or call any Linkbreakers API endpoint from a shell, script or CI job. Use when the user wants to automate Linkbreakers from the terminal, a cron job or GitHub Actions, prefers shell commands over writing SDK code, or asks how to install the Linkbreakers CLI.",
+      "description": "Create a Linkbreakers workspace and API token in one command, then manage links, QR codes, workflows and analytics from the shell with the official linkbreakers CLI. Use whenever the user asks to create a link, short link or QR code with Linkbreakers, wants to automate Linkbreakers from the terminal, a script, cron or CI, or asks how to install or authenticate the Linkbreakers CLI. Works with no account: signup is one command.",
       "path": "skills/use-linkbreakers-cli/SKILL.md"
     }
   ]

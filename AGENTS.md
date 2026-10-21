@@ -11,6 +11,7 @@ Linkbreakers is lead capture infrastructure for the physical world. Every QR cod
 | An assistant acting for a user in their workspace | MCP server `https://mcp.linkbreakers.com` (OAuth, no token handling) |
 | Writing application code | An SDK, or REST directly |
 | Writing shell scripts or CI jobs | The `linkbreakers` CLI |
+| Asked to create a link or QR code and there is no token yet | `npx -y linkbreakers-cli signup --email <the user's email>`: a workspace and a token in one command |
 | Answering questions about the product | Docs MCP `https://linkbreakers.com/mcp` or `https://linkbreakers.com/llms.txt` |
 
 All surfaces call the same API, so capabilities match.
@@ -20,7 +21,7 @@ All surfaces call the same API, so capabilities match.
 - Base URL: `https://api.linkbreakers.com` (all paths start with `/v1/`)
 - OpenAPI 3 spec: https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json
 - Reference: https://linkbreakers.com/help/api
-- Auth: `Authorization: Bearer <workspace token>`. Users create tokens at https://app.linkbreakers.com/workspace/dashboard/api-tokens. Secret keys (`WORKSPACE_TOKEN_KEY_TYPE_SECRET`) have full access and belong on servers only; publishable keys (`WORKSPACE_TOKEN_KEY_TYPE_PUBLISHABLE`) have limited access for browser use.
+- Auth: `Authorization: Bearer <workspace token>`. Users with an account create tokens at https://app.linkbreakers.com/workspace/dashboard/api-tokens. With no account, `npx -y linkbreakers-cli signup --email <email>` creates a workspace and its token in one step (see CLI). Secret keys (`WORKSPACE_TOKEN_KEY_TYPE_SECRET`) have full access and belong on servers only; publishable keys (`WORKSPACE_TOKEN_KEY_TYPE_PUBLISHABLE`) have limited access for browser use.
 - JSON fields are camelCase. Enums are full prefixed strings (`EVENT_ACTION_FORM_SUBMIT`, `KIND_EXIT`).
 - Lists paginate with `pageSize` and `pageToken`; follow `nextPageToken`.
 
@@ -62,13 +63,13 @@ const { link, workflowSteps } = await links.linksServiceCreate({
 ## CLI
 
 ```bash
-brew install linkbreakers-com/tap/linkbreakers
-export LINKBREAKERS_TOKEN=...
-linkbreakers links create --destination https://example.com --wait-for-qrcode
-linkbreakers raw GET "/v1/visitors?pageSize=50"
+npx -y linkbreakers-cli signup --email you@example.com   # no account: a workspace and its token, saved
+npx -y linkbreakers-cli links create --destination https://example.com --wait-for-qrcode
+npx -y linkbreakers-cli visitors list --page-size 50
+npx -y linkbreakers-cli analytics-data get-top-links
 ```
 
-`raw METHOD PATH` reaches any endpoint. Docs: https://linkbreakers.com/cli and https://github.com/linkbreakers-com/linkbreakers-cli
+Every API operation is a command, `linkbreakers <service> <operation>`, generated from the OpenAPI spec; `--help` lists its flags and `--data` takes a JSON body. `signup` emails the person a link and a code to claim the workspace; unclaimed, it is deleted after 24 hours, so relay the link and code it prints. With an existing account, use `linkbreakers auth set-token --token <token>` or `LINKBREAKERS_TOKEN` instead. Docs: https://linkbreakers.com/cli and https://github.com/linkbreakers-com/linkbreakers-cli
 
 ## MCP
 

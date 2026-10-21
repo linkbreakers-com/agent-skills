@@ -26,7 +26,7 @@ The response `attributes[]` gives `key` and `type` (`VISITOR_ATTRIBUTE_TYPE_STRI
 
 - REST: `GET /v1/visitors` with `pageSize` (default 50, max 200), `pageToken`, `email`, `search`, `linkId`, `sortField`, `sortDirection`, `responseFormat`.
 - MCP: `visitors_list`
-- CLI: `linkbreakers raw GET "/v1/visitors?pageSize=50&linkId=<uuid>"`
+- CLI: `linkbreakers visitors list --page-size 50 --link-id <uuid>`
 
 Response: `json.visitors[]`, `json.totalCount`, `json.hasMore`, `json.nextPageToken`. Keep requesting with `pageToken=<nextPageToken>` while `hasMore` is true.
 

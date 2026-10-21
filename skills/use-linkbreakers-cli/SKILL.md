@@ -1,74 +1,56 @@
 ---
 name: use-linkbreakers-cli
-description: Install, authenticate and drive the official linkbreakers command line tool to manage links, QR codes, directories and custom domains, or call any Linkbreakers API endpoint from a shell, script or CI job. Use when the user wants to automate Linkbreakers from the terminal, a cron job or GitHub Actions, prefers shell commands over writing SDK code, or asks how to install the Linkbreakers CLI.
+description: Create a Linkbreakers workspace and API token in one command, then manage links, QR codes, workflows and analytics from the shell with the official linkbreakers CLI. Use whenever the user asks to create a link, short link or QR code with Linkbreakers, wants to automate Linkbreakers from the terminal, a script, cron or CI, or asks how to install or authenticate the Linkbreakers CLI. Works with no account: signup is one command.
 license: MIT
-compatibility: Requires a shell on macOS, Linux or Windows and network access to api.linkbreakers.com.
+compatibility: Requires a shell on macOS, Linux or Windows, Node.js 18+ for npx (or another install method), and network access to api.linkbreakers.com and mcp.linkbreakers.com.
 metadata:
   author: linkbreakers
-  version: "1.0"
+  version: "2.0"
 ---
 
 # Use the Linkbreakers CLI
 
-The binary is `linkbreakers`. Output is JSON by default, so it pipes cleanly into `jq`.
+The binary is `linkbreakers`. Every API operation is a command, generated from the API's OpenAPI document, so anything the API can do, the CLI can do. Output is JSON.
 
-## Install
+## Start: one command, no account
 
-Pick one:
-
-```bash
-brew install linkbreakers-com/tap/linkbreakers        # macOS and Linux (Homebrew)
-npm install -g linkbreakers-cli                        # any OS with Node.js 18+
-curl -fsSL https://cli.linkbreakers.com/install.sh | bash   # macOS and Linux installer
-```
-
-Windows without npm: download the `windows_amd64` or `windows_arm64` zip from https://github.com/linkbreakers-com/linkbreakers-cli/releases.
-
-Check it: `linkbreakers version`.
-
-Note: the npm package is `linkbreakers-cli`. The npm package `linkbreakers` is the TypeScript SDK, not the CLI.
-
-## Authenticate
-
-Create a workspace API token at https://app.linkbreakers.com/workspace/dashboard/api-tokens, then either:
+If no token is configured and the user has no Linkbreakers account yet, ask for their email address, then:
 
 ```bash
-export LINKBREAKERS_TOKEN=...                     # preferred in CI and agents
-linkbreakers auth set-token --token "$TOKEN"     # persists to the user config dir
-linkbreakers auth status
+npx -y linkbreakers-cli signup --email <their email>
 ```
 
-Global flags on every command: `--token`, `--base-url`, `-o/--output json|table`. Environment: `LINKBREAKERS_TOKEN`, `LINKBREAKERS_BASE_URL`, `LINKBREAKERS_OUTPUT`.
+This creates a free workspace, saves its API token in the CLI config, and emails that address a link and a 6-digit code to claim the workspace. The JSON answer has the workspace id, the token's scopes, and a `claim` block with the link and the code.
 
-## First-class commands
+Tell the user, in one message: "I created a Linkbreakers workspace for you. Open the link we emailed you (or this one: <verification_uri>) and enter <user_code> to keep it." An unclaimed workspace is deleted with its links and QR codes 24 hours after signup. Until then every command reminds you on stderr; once the user claims it, the saved token is upgraded on its own. `npx -y linkbreakers-cli claim --wait` waits for the claim if you need the extra permissions now.
+
+If the user already has an account, do not sign up: ask them for a token from https://app.linkbreakers.com/workspace/dashboard/api-tokens, then `linkbreakers auth set-token --token <token>` (or set `LINKBREAKERS_TOKEN`).
+
+## Create links and read analytics
 
 ```bash
-linkbreakers links list --page-size 20 --search menu --tags spring-2026
-linkbreakers links get <id> --include qrcodeSignedUrl,tags
-linkbreakers links create --destination https://example.com --name "Launch" --shortlink launch \
-  --tags campaign-a,campaign-b --metadata owner=marketing --wait-for-qrcode
-linkbreakers links delete <id>
-
-linkbreakers directories list | get <id> | create --name "Stores" | delete <id>
-
-linkbreakers custom-domains list | get <id> | create --name qr.example.com | check <id> | delete <id>
+npx -y linkbreakers-cli links create --destination https://example.com --name "Spring menu" --tags spring --wait-for-qrcode
+npx -y linkbreakers-cli links get --id <link id> --include qrcodeSignedUrl
+npx -y linkbreakers-cli links list --page-size 20
+npx -y linkbreakers-cli analytics-data get-top-links
+npx -y linkbreakers-cli metrics get-workspace-metric
 ```
 
-`links create` also takes `--custom-domain-id`, `--directory-id`, `--fallback-destination`, `--qrcode-template-id`, `--qrcode-design-id`, `--conversion-tracking`. `links list` also takes `--view LINK_VIEW_DIRECTORY --directory-id <id>`, `--sort-by`, `--sort-direction`, `--page-token`.
+Install it to drop the `npx -y linkbreakers-cli` prefix: `npm install -g linkbreakers-cli`, `brew install linkbreakers-com/tap/linkbreakers`, or `curl -fsSL https://cli.linkbreakers.com/install.sh | bash`. The npm package `linkbreakers` is the TypeScript SDK, not the CLI.
 
-## Everything else: `raw`
+## How commands are shaped
 
-`raw METHOD PATH` calls any endpoint of the REST API with your auth already applied. Paths are the same as in the OpenAPI spec (https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json).
+`linkbreakers <service> <operation>`: `links create`, `workflow-steps update`, `visitors search`, `analytics-data get-breakdown`. Run `linkbreakers --help` for the services and `linkbreakers <service> <operation> --help` for the flags, which come from the request's fields.
 
-```bash
-linkbreakers raw GET "/v1/visitors?pageSize=50"
-linkbreakers raw POST /v1/visitors/search --body '{"attributeFilters":[{"key":"$email","operator":"VISITOR_ATTRIBUTE_FILTER_OPERATOR_EXISTS"}]}'
-linkbreakers raw GET /v1/links/<linkId>/workflow-steps
-linkbreakers raw POST /v1/links/<linkId>/workflow-steps --body-file form-step.json
-linkbreakers raw GET /v1/links/<linkId>/workflow-steps/validate
-```
+- Scalars are flags: `--destination https://example.com`, `--qrcode-enabled=false`, `--page-size 20`.
+- Lists repeat the flag: `--tags spring --tags print`.
+- Structured fields take JSON: `--metadata '{"campaign":"spring"}'`, `--payload '{"clientRedirect":{"destination":"https://example.com"}}'`.
+- `--data` takes the whole request body as JSON, `@file.json`, or `-` for stdin. Flags set fields on top of it.
+- Path parameters are flags too: `links get --id <id>`, `workflow-steps list --link-id <id>`.
 
-Flags: `--body`, `--body-file`, `--header key=value` (repeatable).
+## Errors
+
+A failed call prints the API's code and message, for example `403 WORKSPACE_UNVERIFIED: This workspace is paused ...`. The message says what to do next; follow it. `INSUFFICIENT_PLATFORM_CREDITS` or a plan limit means the free plan is used up for the month: the user can upgrade from the dashboard once the workspace is claimed.
 
 ## Scripting patterns
 
@@ -76,17 +58,17 @@ Flags: `--body`, `--body-file`, `--header key=value` (repeatable).
 # QR image URL of a new link
 linkbreakers links create --destination https://example.com --wait-for-qrcode | jq -r '.link.qrcodeSignedUrl'
 
-# Create one link per row of a CSV (name,destination)
+# One link per row of a CSV (name,destination)
 while IFS=, read -r name dest; do
   linkbreakers links create --name "$name" --destination "$dest" | jq -r '.link.entrypoint'
 done < links.csv
 ```
 
-For large batches prefer one `raw POST /v1/links/bulk` call with `{"links": [...]}`.
+For large batches prefer one `links create-bulk --data @links.json` call with `{"links": [...]}`.
 
 ## Updating
 
-`linkbreakers self-update` for installer-based installs. Homebrew installs update with `brew upgrade linkbreakers`; npm installs with `npm install -g linkbreakers-cli@latest`.
+`linkbreakers self-update` for installer-based installs, `brew upgrade linkbreakers` for Homebrew, `npm install -g linkbreakers-cli@latest` for npm.
 
 ## Reference
 

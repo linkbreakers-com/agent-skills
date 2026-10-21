@@ -139,6 +139,7 @@
         "name": { "type": "string", "minLength": 1 },
         "repo": { "$ref": "#/$defs/httpsUrl" },
         "docsUrl": { "$ref": "#/$defs/httpsUrl" },
+        "quickstart": { "type": "string", "minLength": 1, "description": "One command an agent runs when it has no token: creates a workspace and saves its API token." },
         "install": {
           "type": "object",
           "minProperties": 1,

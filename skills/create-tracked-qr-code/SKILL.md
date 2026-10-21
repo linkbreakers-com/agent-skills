@@ -13,7 +13,7 @@ Every QR code in Linkbreakers belongs to a **link**. The link owns the destinati
 
 ## Before you start
 
-- Auth: a workspace API token (secret key) sent as `Authorization: Bearer <token>`. Users create one at https://app.linkbreakers.com/workspace/dashboard/api-tokens.
+- Auth: a workspace API token (secret key) sent as `Authorization: Bearer <token>`. Users with an account create one at https://app.linkbreakers.com/workspace/dashboard/api-tokens. With no account, `npx -y linkbreakers-cli signup --email <their email>` creates a workspace and saves its token in one step (see the use-linkbreakers-cli skill).
 - Base URL: `https://api.linkbreakers.com`
 - Pick one surface: MCP tool `links_create` (if the Linkbreakers MCP server is connected), the CLI (`linkbreakers links create`), an SDK (`LinksApi.linksServiceCreate`), or raw REST. They all call the same endpoint.
 

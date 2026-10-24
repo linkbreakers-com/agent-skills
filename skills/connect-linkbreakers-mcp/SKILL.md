@@ -4,7 +4,7 @@ description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Cont
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Connect the Linkbreakers MCP server
@@ -12,7 +12,7 @@ metadata:
 - Product MCP server: `https://mcp.linkbreakers.com` (Streamable HTTP, OAuth 2.1). It acts on the signed-in user's workspace.
 - Docs MCP server: `https://linkbreakers.com/mcp` (Streamable HTTP, no auth). Read-only access to the help center and developer docs.
 
-No API token is needed for the product server: the client opens a browser, the user signs in to Linkbreakers, and tokens are issued and refreshed automatically. Never ask the user to paste a workspace token into an MCP config.
+No API token is needed for the product server, and none is accepted: the client opens a browser, the user signs in to Linkbreakers, and tokens are issued and refreshed automatically. The server refuses dashboard API tokens (workspace tokens) with `API tokens are not accepted by the MCP server; connect with OAuth`, so never put one in an MCP config or an `Authorization` header; the plain URL is the whole config. API tokens are for the REST API, the SDKs and the CLI. The only other credential the product server accepts is the token an agent gets from anonymous agent registration (https://linkbreakers.com/auth.md), for an agent with nobody around to sign in.
 
 ## Client setup
 
@@ -113,7 +113,8 @@ Media tips:
 
 ## Troubleshooting
 
-- 401 from `https://mcp.linkbreakers.com` without a browser prompt: the client does not support remote OAuth. Use a client that does, or use the REST API with a workspace token instead.
+- `API tokens are not accepted by the MCP server; connect with OAuth`: the config sends a workspace API token. Remove the `Authorization` header or token env var and reconnect so the client runs the OAuth sign-in.
+- 401 from `https://mcp.linkbreakers.com` without a browser prompt: the client does not support remote OAuth. Use a client that does, or use the REST API, an SDK or the CLI with a workspace token instead.
 - Signed into the wrong workspace: remove the server, sign out of Linkbreakers in the browser, add it again.
 - Session revoked or expired: remove and re-add the server to trigger a fresh sign-in.
 - Some clients need a full restart after authenticating.

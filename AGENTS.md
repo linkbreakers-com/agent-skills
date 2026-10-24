@@ -8,7 +8,7 @@ Linkbreakers is lead capture infrastructure for the physical world. Every QR cod
 
 | You are | Use |
 | --- | --- |
-| An assistant acting for a user in their workspace | MCP server `https://mcp.linkbreakers.com` (OAuth, no token handling) |
+| An assistant acting for a user in their workspace | MCP server `https://mcp.linkbreakers.com` (OAuth, no token handling; API tokens are refused) |
 | Writing application code | An SDK, or REST directly |
 | Writing shell scripts or CI jobs | The `linkbreakers` CLI |
 | Asked to create a link or QR code and there is no token yet | `npx -y linkbreakers-cli signup --email <the user's email>`: a workspace and a token in one command |
@@ -21,7 +21,7 @@ All surfaces call the same API, so capabilities match.
 - Base URL: `https://api.linkbreakers.com` (all paths start with `/v1/`)
 - OpenAPI 3 spec: https://api.linkbreakers.com/internal/openapi/api/v1/api.swagger.json
 - Reference: https://linkbreakers.com/help/api
-- Auth: `Authorization: Bearer <workspace token>`. Users with an account create tokens at https://app.linkbreakers.com/workspace/dashboard/api-tokens. With no account, `npx -y linkbreakers-cli signup --email <email>` creates a workspace and its token in one step (see CLI). Secret keys (`WORKSPACE_TOKEN_KEY_TYPE_SECRET`) have full access and belong on servers only; publishable keys (`WORKSPACE_TOKEN_KEY_TYPE_PUBLISHABLE`) have limited access for browser use.
+- Auth: `Authorization: Bearer <workspace token>`. Workspace tokens work on the REST API, the SDKs and the CLI, not on the MCP server. Users with an account create tokens at https://app.linkbreakers.com/workspace/dashboard/api-tokens. With no account, `npx -y linkbreakers-cli signup --email <email>` creates a workspace and its token in one step (see CLI). Secret keys (`WORKSPACE_TOKEN_KEY_TYPE_SECRET`) have full access and belong on servers only; publishable keys (`WORKSPACE_TOKEN_KEY_TYPE_PUBLISHABLE`) have limited access for browser use.
 - JSON fields are camelCase. Enums are full prefixed strings (`EVENT_ACTION_FORM_SUBMIT`, `KIND_EXIT`).
 - Lists paginate with `pageSize` and `pageToken`; follow `nextPageToken`.
 
@@ -73,7 +73,7 @@ Every API operation is a command, `linkbreakers <service> <operation>`, generate
 
 ## MCP
 
-- Product: `https://mcp.linkbreakers.com`, Streamable HTTP, OAuth 2.1. Claude Code: `claude mcp add --transport http linkbreakers https://mcp.linkbreakers.com`. Tool names are snake_case (`links_create`, `workflow_steps_create`, `workflow_steps_connect`, `workflow_steps_validate`, `visitors_list`, `domains_check`, ...).
+- Product: `https://mcp.linkbreakers.com`, Streamable HTTP, OAuth 2.1. It does not accept dashboard API tokens (it answers `API tokens are not accepted by the MCP server; connect with OAuth`); the only other credential it takes is the token from anonymous agent registration (https://linkbreakers.com/auth.md). Configure it with the plain URL and no `Authorization` header. Claude Code: `claude mcp add --transport http linkbreakers https://mcp.linkbreakers.com`. Tool names are snake_case (`links_create`, `workflow_steps_create`, `workflow_steps_connect`, `workflow_steps_validate`, `visitors_list`, `domains_check`, ...).
 - Docs: `https://linkbreakers.com/mcp`, no auth.
 
 ## Rules for agents

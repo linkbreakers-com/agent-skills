@@ -185,32 +185,6 @@
         "helpCenter": { "$ref": "#/$defs/httpsUrl" }
       }
     },
-    "sandbox": {
-      "description": "A test mode with its own credentials, separate from live data.",
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["description", "createEndpoint", "listEndpoint", "tokenPrefix", "lifetimeDays", "maxPerWorkspace", "billed", "monthlyLimits", "docsUrl"],
-      "properties": {
-        "description": { "type": "string", "minLength": 1 },
-        "createEndpoint": { "$ref": "#/$defs/httpsUrl" },
-        "listEndpoint": { "$ref": "#/$defs/httpsUrl" },
-        "tokenPrefix": { "type": "string", "minLength": 1 },
-        "lifetimeDays": { "type": "integer", "minimum": 1 },
-        "maxPerWorkspace": { "type": "integer", "minimum": 1 },
-        "billed": { "type": "boolean" },
-        "monthlyLimits": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["apiCalls", "countedScans", "links"],
-          "properties": {
-            "apiCalls": { "type": "integer", "minimum": 0 },
-            "countedScans": { "type": "integer", "minimum": 0 },
-            "links": { "type": "integer", "minimum": 0 }
-          }
-        },
-        "docsUrl": { "$ref": "#/$defs/httpsUrl" }
-      }
-    },
     "skills": {
       "type": "array",
       "items": {

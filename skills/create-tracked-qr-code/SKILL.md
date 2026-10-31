@@ -1,10 +1,10 @@
 ---
 name: create-tracked-qr-code
-description: Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, wants one link behind many printed codes that each carry their own value (serial number, table, room, batch, GS1 Digital Link), or wants to change where an existing QR code points without reprinting it.
+description: Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, wants one link behind many printed codes that each carry their own value (serial number, table, room, batch, GS1 Digital Link) with a QR image per value in the link design, or wants to change where an existing QR code points without reprinting it.
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Create a tracked QR code
@@ -109,7 +109,34 @@ curl -sS https://api.linkbreakers.com/v1/links \
 - GS1 Digital Link: `01/09506000134352/10/{batch}` answers every batch of that GTIN and saves `batch`.
 - Rules: a variable fills a whole segment; its name starts with a lowercase letter, then lowercase letters, digits or underscores, up to 40 characters; each name appears once; the segment `steps` is reserved. A link with a fixed slug wins over a dynamic one for the same address.
 - Errors: `DYNAMIC_SLUG_NEEDS_CUSTOM_DOMAIN` (no `customDomainId`), `DYNAMIC_SLUG_DUPLICATE_VARIABLE` (a name used twice), `DYNAMIC_SLUG_OVERLAPS` (another dynamic slug of the domain already matches the same addresses).
-- The link's own QR code (`qrcodeSignedUrl`) encodes the slug with its `{serial}` placeholder, so generate the per-item codes from the filled addresses.
+- The link's own QR code (`qrcodeSignedUrl`) encodes the slug with its `{serial}` placeholder. Do not print it: render one code per value instead (next section).
+
+### Render the QR codes to print, one per value
+
+`POST /v1/links/{id}/qrcode-images:render` draws the link's QR code **in its saved design** (colours, dot style, logo) for each item and returns signed image URLs. One item per code, a value for every variable, up to 100 items per call; call it again for more.
+
+```bash
+curl -sS -X POST "https://api.linkbreakers.com/v1/links/$LINK_ID/qrcode-images:render" \
+  -H "Authorization: Bearer $LINKBREAKERS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {"values": {"batch": "LOT001"}},
+      {"values": {"batch": "LOT002"}}
+    ],
+    "format": "QRCODE_RENDER_FORMAT_PNG",
+    "size": 1024
+  }'
+```
+
+- Response: `items[]` in request order, each with `values`, `address` (the URL the code opens, values filled in and URL-escaped), `imageUrl` (signed, expires: download it right away) and `contentType`.
+- `format`: `QRCODE_RENDER_FORMAT_PNG` (default) or `QRCODE_RENDER_FORMAT_SVG` for print at any size. `size`: 256 to 4096 pixels, default 1024.
+- MCP: `links_render_qrcode` with `{"id": "<link id>", "items": [{"values": {"batch": "LOT001"}}]}`. CLI: `linkbreakers links render-qrcode-images --id <link id> --data '{"items":[{"values":{"batch":"LOT001"}}]}'`. SDKs: `LinksApi.linksServiceRenderQrcodeImages`.
+- Images are cached per design, values, format and size: asking twice is fast, and editing the design gives new images.
+- Errors: `QRCODE_RENDER_VALUES_MISSING` (a variable without a value), `QRCODE_RENDER_VALUES_UNKNOWN` (a name the slug does not have, or values on a regular link), `QRCODE_RENDER_ITEMS_INVALID` (0 or more than 100 items), `QRCODE_RENDER_SIZE_INVALID`.
+- A regular link works too: one item without values gives its code at the size and format you choose.
+
+Printing a run of 500 serials: loop over the serials in pages of 100, download each `imageUrl`, and name the file after its value.
 
 ### QR code that opens a PDF, image or video
 

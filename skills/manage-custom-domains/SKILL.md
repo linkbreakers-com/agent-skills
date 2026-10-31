@@ -44,7 +44,7 @@ All REST calls: `https://api.linkbreakers.com`, header `Authorization: Bearer <w
 
    `customDomain.lastError` explains a non-active status in plain words. DNS propagation can take minutes to hours; re-check rather than re-creating the domain.
 
-4. **Use it**. Pass `customDomainId` when creating links (`POST /v1/links`, `links/bulk`, `links/contact`, `links/thank-you`). Check slug availability on that domain with `GET /v1/links/shortlink-availability?shortlink=menu&customDomainId=<id>`.
+4. **Use it**. Pass `customDomainId` when creating links (`POST /v1/links`, `links/bulk`, `links/contact`, `links/thank-you`). Check slug availability on that domain with `GET /v1/links/shortlink-availability?shortlink=menu&customDomainId=<id>`. Only links on a custom domain can have a dynamic slug (`p/{serial}`, one link for many printed codes that each save their value on the visitor): see "One link for many printed codes" in `create-tracked-qr-code`.
 
 5. **Optional root redirect**. `rootDestination` sends visitors who open the bare domain (no path) to the user's site instead of linkbreakers.com. That redirect is not tracked.
 

@@ -186,7 +186,7 @@
     },
     {
       "name": "create-tracked-qr-code",
-      "description": "Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, or wants to change where an existing QR code points without reprinting it.",
+      "description": "Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, wants one link behind many printed codes that each carry their own value (serial number, table, room, batch, GS1 Digital Link), or wants to change where an existing QR code points without reprinting it.",
       "path": "skills/create-tracked-qr-code/SKILL.md"
     },
     {

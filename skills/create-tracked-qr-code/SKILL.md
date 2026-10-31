@@ -1,10 +1,10 @@
 ---
 name: create-tracked-qr-code
-description: Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, or wants to change where an existing QR code points without reprinting it.
+description: Create a Linkbreakers link with a dynamic, tracked QR code and get the QR image URL, short URL, and scan counts back. Use when the user wants a QR code for a flyer, sign, product, booth, table tent or business card, wants a QR code that opens a PDF menu, brochure, image or video, wants to shorten a URL with scan tracking, wants one link behind many printed codes that each carry their own value (serial number, table, room, batch, GS1 Digital Link), or wants to change where an existing QR code points without reprinting it.
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Create a tracked QR code
@@ -35,7 +35,7 @@ Every QR code in Linkbreakers belongs to a **link**. The link owns the destinati
    ```
 
    Useful optional fields on `CreateLinkRequest`:
-   - `shortlink`: custom slug. Check it first with `GET /v1/links/shortlink-availability`.
+   - `shortlink`: custom slug, one or several segments (`menu/lunch`). Check it first with `GET /v1/links/shortlink-availability`. On a custom domain it can be dynamic, see "One link for many printed codes" below.
    - `customDomainId`: serve the link from a verified custom domain (see the `manage-custom-domains` skill).
    - `qrcodeTemplateId` or `qrcodeDesignId`: style the QR code.
    - `fallbackDestination`, `expiresAt`, `expiredDestination`, `directoryId`.
@@ -83,10 +83,33 @@ Every QR code in Linkbreakers belongs to a **link**. The link owns the destinati
 
 ## Variants
 
-- Many QR codes at once (one per table, per store, per product): `POST /v1/links/bulk` with `{"links": [CreateLinkRequest, ...]}` (MCP `links_create_bulk`).
+- Many QR codes at once (one per table, per store, per product): `POST /v1/links/bulk` with `{"links": [CreateLinkRequest, ...]}` (MCP `links_create_bulk`). When they all go to the same place and only an identifier differs, one dynamic link is simpler: see below.
 - Digital business card that downloads a vCard: `POST /v1/links/contact` (MCP `links_create_contact`).
 - Link that ends on a thank you page instead of a redirect: `POST /v1/links/thank-you` with a required `title` (MCP `links_create_thank_you`).
 - Apply a community QR style: `POST /v1/qrcode-designs/apply-template` (MCP `qrcodedesigns_apply_template`); browse styles with `GET /v1/public/qrcode-templates`.
+
+### One link for many printed codes (dynamic slug)
+
+When every code should run the same flow and only an identifier differs (a serial number per item, a table, a room, a batch), create **one** link whose slug has variable segments instead of one link per code. It needs a verified custom domain (`customDomainId`, see `manage-custom-domains`).
+
+```bash
+curl -sS https://api.linkbreakers.com/v1/links \
+  -H "Authorization: Bearer $LINKBREAKERS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "destination": "https://example.com/product",
+    "name": "Product passport",
+    "customDomainId": "<custom domain id>",
+    "shortlink": "p/{serial}"
+  }'
+```
+
+- `{serial}` matches any value in that segment: `https://go.example.com/p/A1B2C3` and `https://go.example.com/p/Z9` both open this link. Print one QR code per value, each encoding the full address with its value filled in.
+- Each visit saves the value on the visitor as the attribute `serial` (`serial = A1B2C3`), visible on the visitor (`GET /v1/visitors/{id}`, MCP `visitors_get`) and usable from the first step: route on it with an `EVENT_ACTION_VISITOR_DATA_CONDITION` step (see `build-lead-capture-workflow`).
+- GS1 Digital Link: `01/09506000134352/10/{batch}` answers every batch of that GTIN and saves `batch`.
+- Rules: a variable fills a whole segment; its name starts with a lowercase letter, then lowercase letters, digits or underscores, up to 40 characters; each name appears once; the segment `steps` is reserved. A link with a fixed slug wins over a dynamic one for the same address.
+- Errors: `DYNAMIC_SLUG_NEEDS_CUSTOM_DOMAIN` (no `customDomainId`), `DYNAMIC_SLUG_DUPLICATE_VARIABLE` (a name used twice), `DYNAMIC_SLUG_OVERLAPS` (another dynamic slug of the domain already matches the same addresses).
+- The link's own QR code (`qrcodeSignedUrl`) encodes the slug with its `{serial}` placeholder, so generate the per-item codes from the filled addresses.
 
 ### QR code that opens a PDF, image or video
 

@@ -36,7 +36,7 @@ Manage: `GET /v1/webhooks`, `GET|PATCH|DELETE /v1/webhooks/{id}`. Each webhook r
 
 ## What your endpoint receives
 
-`POST` with `Content-Type: application/json`, `User-Agent: Linkbreakers-Webhooks/1.0`, headers `X-Linkbreakers-Event`, `X-Linkbreakers-Webhook-ID`, `X-Linkbreakers-Event-ID`, and a signature (see below). Body:
+`POST` with `Content-Type: application/json`, `User-Agent: Linkbreakers-Webhooks/1.0`, headers `X-Linkbreakers-Event`, `X-Linkbreakers-Event-Type`, `X-Linkbreakers-Webhook-ID`, `X-Linkbreakers-Event-ID`, and a signature (see below). Body:
 
 ```json
 {
@@ -49,7 +49,7 @@ Manage: `GET /v1/webhooks`, `GET|PATCH|DELETE /v1/webhooks/{id}`. Each webhook r
 }
 ```
 
-Branch on the body's `type`, not on the `X-Linkbreakers-Event` header (the header currently always says `event.completed`). `type` is `step.completed` when a specific workflow step completed (then `workflowStep` is present) or `event.completed` for the scan as a whole. The visitor's captured fields are on `event.visitor`; form answers are also in `event.traces`. Inside webhook bodies, enum values are unprefixed (`FORM_SUBMIT`, `INTERACTION`), unlike the REST API (`EVENT_ACTION_FORM_SUBMIT`, `KIND_INTERACTION`). Treat the exact nested fields as data to inspect on the first delivery rather than assumptions: log one real payload before mapping it into a CRM.
+Branch on the body's `type` or the `X-Linkbreakers-Event-Type` header (they always agree), not on `X-Linkbreakers-Event` (always `event.completed`, kept for compatibility). `type` is `step.completed` when a specific workflow step completed (then `workflowStep` is present) or `event.completed` for the scan as a whole. The visitor's captured fields are on `event.visitor`; form answers are also in `event.traces`. Inside webhook bodies, enum values are unprefixed (`FORM_SUBMIT`, `INTERACTION`), unlike the REST API (`EVENT_ACTION_FORM_SUBMIT`, `KIND_INTERACTION`). Treat the exact nested fields as data to inspect on the first delivery rather than assumptions: log one real payload before mapping it into a CRM.
 
 ## Receiver checklist
 

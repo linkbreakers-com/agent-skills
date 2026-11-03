@@ -80,9 +80,10 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | QR code styling | `qrcodedesigns_create`, `qrcodedesigns_update`, `qrcodedesigns_apply_template`, `qrtemplates_list`, `qrtemplates_get`, `qrtemplates_create`, `qrtemplates_update`, `qrtemplates_delete`, `qrtemplates_publish` |
 | Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `pagethemetemplates_*`, `pagethemes_matching_template` |
 | Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
+| Webhooks | `webhooks_create`, `webhooks_list`, `webhooks_get`, `webhooks_update`, `webhooks_delete` (see `send-leads-to-webhooks`) |
 | Organisation | `directories_*`, `tags_list` |
 
-The live list is whatever the server returns from `tools/list`; prefer it over this table if they differ. Anything not exposed as a tool (webhooks, workspace tokens, members) is available through the REST API.
+The live list is whatever the server returns from `tools/list`; prefer it over this table if they differ. Anything not exposed as a tool (workspace tokens, members) is available through the REST API.
 
 Workflow tips: after creating steps, always run `workflow_steps_validate` and connect every branch reported as missing. See the `build-lead-capture-workflow` skill.
 

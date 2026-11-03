@@ -4,12 +4,12 @@ description: Push Linkbreakers scans and captured leads to another system in rea
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Send leads to webhooks
 
-Linkbreakers POSTs one signed JSON delivery to your endpoint for each workflow step a visitor completes. Webhooks are managed over REST (`/v1/webhooks`) or in the dashboard under Developers, Webhooks. There is no MCP tool for webhooks; use the REST API, an SDK (`WebhooksApi`) or `linkbreakers raw`.
+Linkbreakers POSTs one signed JSON delivery to your endpoint per step completion: each time a visitor completes a workflow step, so a form submitted twice in one visit sends two deliveries. Webhooks are managed over REST (`/v1/webhooks`), with the MCP tools `webhooks_create`, `webhooks_list`, `webhooks_get`, `webhooks_update` and `webhooks_delete`, with an SDK (`WebhooksApi`) or `linkbreakers raw`, or in the dashboard under Developers, Webhooks.
 
 All REST calls: `https://api.linkbreakers.com`, header `Authorization: Bearer <workspace token>`.
 
@@ -39,7 +39,7 @@ Manage: `GET /v1/webhooks`, `GET|PATCH|DELETE /v1/webhooks/{id}`. Each webhook r
 `POST` with `Content-Type: application/json`, `User-Agent: Linkbreakers-Webhooks/1.0`, the signature headers (see below) and two headers of ours, both covered by the signature:
 
 - `X-Linkbreakers-Event`: `visit.entered`, `visit.interacted`, `visit.routed` or `visit.exited`, from the kind of step completed (ENTRY, INTERACTION, CONDITION, EXIT).
-- `X-Linkbreakers-Delivery-ID`: one ID per webhook, visit and step, identical on every retry. The dedupe key.
+- `X-Linkbreakers-Delivery-ID`: one ID per delivery, that is per webhook and step completion, identical on every retry. The dedupe key.
 
 Body (contract `version` `2026-11-04`):
 

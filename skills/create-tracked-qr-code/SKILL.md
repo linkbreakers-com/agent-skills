@@ -130,7 +130,7 @@ curl -sS -X POST "https://api.linkbreakers.com/v1/links/$LINK_ID/qrcode-images:r
 ```
 
 - Response: `items[]` in request order, each with `values`, `address` (the URL the code opens, values filled in and URL-escaped), `imageUrl` (signed, expires: download it right away) and `contentType`.
-- `format`: `QRCODE_RENDER_FORMAT_PNG` (default) or `QRCODE_RENDER_FORMAT_SVG` for print at any size. `size`: 256 to 4096 pixels, default 1024.
+- `format`: `QRCODE_RENDER_FORMAT_PNG` (default), `QRCODE_RENDER_FORMAT_SVG` for print at any size, `QRCODE_RENDER_FORMAT_JPEG` or `QRCODE_RENDER_FORMAT_WEBP`. `size`: 256 to 4096 pixels, default 1024.
 - MCP: `links_render_qrcode` with `{"id": "<link id>", "items": [{"values": {"batch": "LOT001"}}]}`. CLI: `linkbreakers links render-qrcode-images --id <link id> --data '{"items":[{"values":{"batch":"LOT001"}}]}'`. SDKs: `LinksApi.linksServiceRenderQrcodeImages`.
 - Images are cached per design, values, format and size: asking twice is fast, and editing the design gives new images.
 - Errors: `QRCODE_RENDER_VALUES_MISSING` (a variable without a value), `QRCODE_RENDER_VALUES_UNKNOWN` (a name the slug does not have, or values on a regular link), `QRCODE_RENDER_ITEMS_INVALID` (0 or more than 100 items), `QRCODE_RENDER_SIZE_INVALID`.

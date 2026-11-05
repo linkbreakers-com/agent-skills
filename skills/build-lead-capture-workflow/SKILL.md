@@ -4,7 +4,7 @@ description: Turn a Linkbreakers link or QR code into a lead capture flow by add
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Build a lead capture workflow
@@ -35,6 +35,7 @@ All REST calls use `Authorization: Bearer <workspace token>` against `https://ap
 
 - Interaction, one branch `next`: `EVENT_ACTION_FORM_SUBMIT` (payload `form`), `EVENT_ACTION_PASSWORD_VERIFY` (`password`), `EVENT_ACTION_MESSAGE_PAGE` (`messagePage`, one button or a timer).
 - Composite, one branch per button/option/range plus `else` on conditions: `EVENT_ACTION_MULTI_LINK` (`multiLink`, each button continues into more workflow), `EVENT_ACTION_COUNTRY_CONDITION`, `EVENT_ACTION_VISIT_TYPE_CONDITION` (first vs returning), `EVENT_ACTION_DEVICE_TYPE_CONDITION`, `EVENT_ACTION_DEVICE_PLATFORM_CONDITION`, `EVENT_ACTION_DEVICE_BROWSER_CONDITION`, `EVENT_ACTION_DEVICE_BRAND_CONDITION`, `EVENT_ACTION_DEVICE_ACTOR_CONDITION`, `EVENT_ACTION_DAY_OF_WEEK_CONDITION`, `EVENT_ACTION_TIME_OF_DAY_CONDITION`, `EVENT_ACTION_DAY_OF_MONTH_CONDITION`, `EVENT_ACTION_SPECIFIC_DATE_CONDITION`, `EVENT_ACTION_VISITOR_DATA_CONDITION` (route on profile data already captured).
+- Composite with no `else`, one branch per variant: `EVENT_ACTION_TRAFFIC_SPLIT` (`trafficSplit`), an A/B test. See "Traffic split" below.
 - Exit, no branches:
   - `EVENT_ACTION_CLIENT_REDIRECT` (`clientRedirect`).
   - `EVENT_ACTION_THANK_YOU_PAGE` (`thankYouPage`, `title` required).
@@ -85,6 +86,22 @@ The payload key matches the step type: a form step sends `{"payload": {"form": {
 2. Read it back (`workflow_steps_get`) and look at `branches[]`: each has a `branchId`, a `label` and the current `nextStepId` (empty when unconnected).
 3. Connect **every** branch, including `else` on conditions, with `PUT .../branches/{branchId}/connection` and `{"nextStepId": "<target step id>"}`. Connecting is idempotent.
 4. Validate. Unconnected branches show up as issues.
+
+## Traffic split (A/B test)
+
+`EVENT_ACTION_TRAFFIC_SPLIT` sends each visitor to one of 2 to 20 variants by percentage, with no page in between. Create it with `variants` (`label`, `weight` in whole percent) summing to exactly 100, and leave each variant's `id` out: the server generates it once. Read `branches[]` for the ids and connect each one. There is no `else`; an unconnected variant goes to the link's fallback destination. On later updates, send each variant back with its `id` and `nextStepId`. With `workflow_steps_bulk_insert`, set your own short ids such as `a` and `b`, so its branches can name them.
+
+```json
+{"trafficSplit": {"variants": [{"label": "Short form", "weight": 50}, {"label": "Long form", "weight": 50}]}}
+```
+
+- **Sticky is the default.** Leave `sticky` out: a returning visitor keeps the same variant on every visit, computed from the step and the device with nothing stored. It follows the device cookie, so a new device, private browsing or some in-app browsers count as a new visitor. For an A/B test it should stay on.
+- **`sticky: false` assigns every visit afresh**, from the visit's event id, so one person can see several variants while one visit stays on its variant through a form. Set it only when the user asks to share or rotate traffic.
+- **Percentages are approximate at low traffic:** on a 50/50, about plus or minus 10 points at 100 visitors, 3 at 1,000, 1 at 10,000.
+- **Changing weights moves as few visitors as possible:** 90/10 to 80/20 only moves visitors from the first variant to the second. Keep the variant order.
+- **To end a test,** set the weights to 100 and 0.
+- **To target a test,** place a condition before the split, not inside it.
+- **Results:** `analytics_traffic_split_results` (`POST /v1/analytics/traffic-split` with `linkId` and `stepId`) gives visits and visitors per variant with bots and link previews left out, `enoughData` (100 per variant), and `sampleRatioMismatch`. With sticky off, read the numbers as visits. It counts arrivals, not outcomes, and never names a winner; do not name one either.
 
 ## Back buttons ("Back to menu")
 

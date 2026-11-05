@@ -4,7 +4,7 @@ description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Cont
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Connect the Linkbreakers MCP server
@@ -75,7 +75,7 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | Background jobs | `jobs_get` (poll a job such as `links_bulk_create_async` until it finishes) |
 | Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions` |
 | Visitors (leads) | `visitors_list`, `visitors_get`, `visitors_list_attribute_keys` |
-| Events and analytics | `events_list`, `metrics_workspace`, `analytics_step_funnel`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
+| Events and analytics | `events_list`, `metrics_workspace`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_check` |
 | QR code styling | `qrcodedesigns_create`, `qrcodedesigns_update`, `qrcodedesigns_apply_template`, `qrtemplates_list`, `qrtemplates_get`, `qrtemplates_create`, `qrtemplates_update`, `qrtemplates_delete`, `qrtemplates_publish` |
 | Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `pagethemetemplates_*`, `pagethemes_matching_template` |

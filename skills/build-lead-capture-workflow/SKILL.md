@@ -98,7 +98,7 @@ The payload key matches the step type: a form step sends `{"payload": {"form": {
 - **Sticky is the default.** Leave `sticky` out: a returning visitor keeps the same variant on every visit, computed from the step and the device with nothing stored. It follows the device cookie, so a new device, private browsing or some in-app browsers count as a new visitor. For an A/B test it should stay on.
 - **`sticky: false` assigns every visit afresh**, from the visit's event id, so one person can see several variants while one visit stays on its variant through a form. Set it only when the user asks to share or rotate traffic.
 - **Percentages are approximate at low traffic:** on a 50/50, about plus or minus 10 points at 100 visitors, 3 at 1,000, 1 at 10,000.
-- **Changing weights moves as few visitors as possible:** 90/10 to 80/20 only moves visitors from the first variant to the second. Keep the variant order.
+- **Changing weights only moves visitors near the boundaries you changed:** 90/10 to 80/20 only moves visitors from the first variant to the second. Keep the variant order. On an update, leaving `sticky` out keeps its current setting.
 - **To end a test,** set the weights to 100 and 0.
 - **To target a test,** place a condition before the split, not inside it.
 - **Results:** `analytics_traffic_split_results` (`POST /v1/analytics/traffic-split` with `linkId` and `stepId`) gives visits and visitors per variant with bots and link previews left out, `enoughData` (100 per variant), and `sampleRatioMismatch`. With sticky off, read the numbers as visits. It counts arrivals, not outcomes, and never names a winner; do not name one either.

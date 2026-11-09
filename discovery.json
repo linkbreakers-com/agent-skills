@@ -5,16 +5,21 @@
     "name": "Linkbreakers",
     "url": "https://linkbreakers.com",
     "logo": "https://linkbreakers.com/linkbreakers-symbol.svg",
-    "description": "Linkbreakers is no-code workflow automation software (SaaS) for QR codes and links. Each scan or click starts a workflow the business builds itself, and new leads go straight to its CRM.",
+    "description": "Linkbreakers is software (SaaS) for QR codes and links that capture, qualify and route leads. Each scan or click starts a short workflow the business builds: it learns who the person is, tells them apart and sends each one to the right menu, page or contact card, then into the business's CRM or email tool.",
     "categories": [
       "Software",
-      "Workflow automation",
-      "No-code"
+      "Lead capture",
+      "QR codes",
+      "No-code workflow automation"
     ],
     "tags": [
       "lead-capture",
-      "api",
+      "lead-qualification",
+      "lead-routing",
       "qr-codes",
+      "links",
+      "no-code",
+      "api",
       "webhooks",
       "mcp"
     ],

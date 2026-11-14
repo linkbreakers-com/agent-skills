@@ -4,7 +4,7 @@ description: Turn a Linkbreakers link or QR code into a lead capture flow by add
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Build a lead capture workflow
@@ -28,6 +28,8 @@ You capture leads by inserting steps between them. Anything a visitor submits la
 | Delete a step | `DELETE /v1/links/{linkId}/workflow-steps/{id}` | `workflow_steps_delete` |
 | Validate the graph | `GET /v1/links/{linkId}/workflow-steps/validate` | `workflow_steps_validate` |
 | Tidy the canvas | `POST /v1/links/{linkId}/workflow-steps/auto-layout` | `workflow_steps_auto_layout` |
+| Insert one step on many links (up to 50) | `POST /v1/workflow-steps/bulk-insert` | `workflow_steps_bulk_insert` |
+| Restyle many links' pages (up to 50) | `POST /v1/page-themes/bulk-update` | `page_themes_bulk_update` |
 
 All REST calls use `Authorization: Bearer <workspace token>` against `https://api.linkbreakers.com`.
 
@@ -138,6 +140,52 @@ Any step can write attributes to the visitor through `attributeCapture`:
 
 Templates: `{{now}}`, `{{link.name}}`, `{{link.metadata.<key>}}`, and on multi-link steps `{{choice.label}}` / `{{choice.id}}`. Up to 20 writes per step.
 
+## Recipe: the same change on many links
+
+A change that goes on two or more links is one call, not one call per link. Name the links by id or by short link (`acme`, `linkbreak.ing/acme` or `https://linkbreak.ing/acme`); no `workflow_steps_list` first.
+
+Route French visitors of three links to a French page, with a different page for one of them:
+
+```bash
+curl -sS -X POST https://api.linkbreakers.com/v1/workflow-steps/bulk-insert \
+  -H "Authorization: Bearer $LINKBREAKERS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "links": ["link-1", "link-2", "summer-sale"],
+    "eventAction": "EVENT_ACTION_COUNTRY_CONDITION",
+    "payload": {"countryCondition": {"countries": [{"countryCode": "FR"}]}},
+    "branches": [{"branchId": "FR", "destination": "https://acme.com/fr"}],
+    "overrides": [{"link": "summer-sale", "branches": [{"branchId": "FR", "destination": "https://acme.com/fr/ete"}]}]
+  }'
+```
+
+- The step goes right after each link's entry, in front of whatever the entry led to, and the canvas is laid out.
+- List only the branches that go somewhere new, each with its URL: a redirect is created for it. Every branch you leave out, `else` included, keeps going where the link went before.
+- A condition's branch ids: the option's id, the country code on a country condition, the language code on a language condition, `else` for everyone else.
+- `overrides` holds the links that differ: its `branches` replace the shared entries with the same `branchId`, and `insertBefore` (a step id) puts the step somewhere other than right after the entry.
+- `payload` is the same as for a single create; leave every `nextStepId` empty, `branches` does the wiring.
+
+Restyle the pages of many links, with another look on one of them:
+
+```bash
+curl -sS -X POST https://api.linkbreakers.com/v1/page-themes/bulk-update \
+  -H "Authorization: Bearer $LINKBREAKERS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "changes": [
+      {"links": ["link-1", "link-2", "linkbreak.ing/summer-sale"], "slug": "midnight-glass"},
+      {"links": ["link-2"], "theme": {"canvasColor": {"type": "THEME_COLOR_TYPE_SOLID", "colors": ["#F5F0EB"]}}}
+    ]
+  }'
+```
+
+Each entry in `changes` takes a template (`slug`, or `pageThemeTemplateId`), values (`theme`, as in a single page theme update) or both. A link named in a later entry gets that entry instead, as a whole: the two are not merged.
+
+Both return one result per link, in the order named, with `succeededCount` and `failedCount`:
+- Each link succeeds or fails on its own (`status` `BULK_EDIT_STATUS_SUCCEEDED` or `BULK_EDIT_STATUS_FAILED`, with `errorCode` and `errorMessage`). Retry only the failed links: calling `bulk-insert` again for a link that succeeded inserts a second step.
+- `errorCode` `BULK_EDIT_NOT_STARTED` means the call ran out of time before reaching that link, which is untouched: send those links again in a new call.
+- A link that succeeded under `bulk-insert` comes back with its `stepId` and the `issues` validation now finds on it.
+
 ## Pitfalls
 
 - Never leave a branch unconnected; always finish with validate.
@@ -145,6 +193,7 @@ Templates: `{{now}}`, `{{link.name}}`, `{{link.metadata.<key>}}`, and on multi-l
 - For a "Back to menu" button, prefer `backButton` on the sub-page. Connect a branch back to the menu only when the page must always lead there or the click must be recorded as a journey step.
 - A media item still used by an Open media step cannot be deleted. Point the step at other media first.
 - Do not invent step ids. Use the ids returned by create/list calls.
+- Do not loop over links one call at a time for the same change: use the bulk calls above.
 - To push captured leads somewhere else, add a webhook (`send-leads-to-webhooks` skill).
 
-Docs: https://linkbreakers.com/help/article/what-is-a-workflow-in-linkbreakers-and-how-it-powers-automation, https://linkbreakers.com/help/article/how-to-create-a-form
+Docs: https://linkbreakers.com/help/article/what-is-a-workflow-in-linkbreakers-and-how-it-powers-automation, https://linkbreakers.com/help/article/how-to-create-a-form, https://linkbreakers.com/help/article/edit-many-links-at-once-from-the-assistant-mcp-or-api

@@ -10,7 +10,7 @@
     {
       "title": "Use the leads",
       "description": "Read, export, push and enrich the visitors your QR codes capture.",
-      "skills": ["read-visitors-and-leads", "send-leads-to-webhooks", "identify-visitors-on-your-site"]
+      "skills": ["read-visitors-and-leads", "send-leads-to-webhooks", "sync-leads-to-crm", "identify-visitors-on-your-site"]
     },
     {
       "title": "Tooling",

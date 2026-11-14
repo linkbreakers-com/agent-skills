@@ -216,6 +216,11 @@
       "path": "skills/send-leads-to-webhooks/SKILL.md"
     },
     {
+      "name": "sync-leads-to-crm",
+      "description": "Sync the visitors a Linkbreakers QR code or link identifies into a CRM or email marketing tool as contacts, natively, without webhooks or Zapier. Covers HubSpot, Salesforce, Zoho CRM, Pipedrive, Freshsales, Mailchimp, Klaviyo, Brevo, MailerLite, Kit, Loops, Customer.io and Bird. Use when the user wants QR code leads added to a list or audience, created as a CRM contact, lead or deal, mapped to custom fields, or subscribed to marketing only with consent.",
+      "path": "skills/sync-leads-to-crm/SKILL.md"
+    },
+    {
       "name": "use-linkbreakers-cli",
       "description": "Create a Linkbreakers workspace and API token in one command, then manage links, QR codes, workflows and analytics from the shell with the official linkbreakers CLI. Use whenever the user asks to create a link, short link or QR code with Linkbreakers, wants to automate Linkbreakers from the terminal, a script, cron or CI, or asks how to install or authenticate the Linkbreakers CLI. Works with no account: signup is one command.",
       "path": "skills/use-linkbreakers-cli/SKILL.md"

@@ -36,6 +36,7 @@ This repository is an [Agent Plugin](https://agent-plugins.org/specification): `
 | [build-lead-capture-workflow](skills/build-lead-capture-workflow/SKILL.md) | Add forms, conditions and pages to a link and wire every branch |
 | [read-visitors-and-leads](skills/read-visitors-and-leads/SKILL.md) | List, filter, sort and export captured visitors, events and funnels |
 | [send-leads-to-webhooks](skills/send-leads-to-webhooks/SKILL.md) | Push scans and leads to a CRM or backend in real time |
+| [sync-leads-to-crm](skills/sync-leads-to-crm/SKILL.md) | Sync identified visitors natively into HubSpot, Salesforce, Mailchimp, Klaviyo and nine more CRM and email tools |
 | [identify-visitors-on-your-site](skills/identify-visitors-on-your-site/SKILL.md) | Tie a QR scan to a later signup or purchase with the lbid and identify API |
 | [manage-custom-domains](skills/manage-custom-domains/SKILL.md) | Serve links from a branded domain and debug its DNS and certificate |
 | [use-linkbreakers-cli](skills/use-linkbreakers-cli/SKILL.md) | Install and script the `linkbreakers` CLI |

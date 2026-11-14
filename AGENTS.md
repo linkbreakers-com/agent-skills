@@ -34,6 +34,8 @@ Read the OpenAPI spec before calling an endpoint you have not used. Do not guess
 - **Visitor**: a person resolved across scans. Reserved fields `$email`, `$phone`, `$firstName`, `$lastName`; any other key is a typed custom attribute.
 - **Event**: one scan, with traces of the steps it went through and its journey progress.
 - **Custom domain**: white-label hostname for links; must reach `STATUS_ACTIVE` before use.
+- **Bulk edits**: the same workflow step on up to 50 links (`POST /v1/workflow-steps/bulk-insert`) or the same page look (`POST /v1/page-themes/bulk-update`) in one call, links named by id or short link, each succeeding or failing on its own. Never loop one call per link (see `build-lead-capture-workflow`).
+- **Contact tool**: a CRM or email marketing tool (HubSpot, Salesforce, Zoho CRM, Pipedrive, Freshsales, Mailchimp, Klaviyo, Brevo, MailerLite, Kit, Loops, Customer.io, Bird) connected once per workspace (`/v1/integrations/contacts`); identified visitors are then synced into it as contacts (see `sync-leads-to-crm`).
 - **Media**: a PDF, image or MP4 video in the workspace's media library (`/v1/media`), counted against the plan's storage. An `EVENT_ACTION_OPEN_MEDIA` exit step opens one when a visitor scans (`POST /v1/links/open-media` creates such a link). Images of at most 3 MB can also be QR code logos and page theme covers, badges or footer logos. A media item's file can be replaced in place (`POST /v1/media/{id}/replace-uploads`, `POST /v1/media/{id}/replace:import`), keeping its id so its uses follow; QR code logos keep their own copy and are detached.
 
 ## SDKs

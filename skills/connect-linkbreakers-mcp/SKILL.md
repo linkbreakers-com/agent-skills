@@ -73,19 +73,20 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | --- | --- |
 | Links and QR codes | `links_create`, `links_create_bulk`, `links_bulk_create_async`, `links_create_contact`, `links_create_thank_you`, `links_create_open_media`, `links_get`, `links_list`, `links_update`, `links_delete` |
 | Background jobs | `jobs_get` (poll a job such as `links_bulk_create_async` until it finishes) |
-| Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions` |
+| Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions`, `workflow_steps_bulk_insert` (the same step on up to 50 links in one call) |
 | Visitors (leads) | `visitors_list`, `visitors_get`, `visitors_list_attribute_keys` |
 | Events and analytics | `events_list`, `metrics_workspace`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_check` |
 | QR code styling | `qrcodedesigns_create`, `qrcodedesigns_update`, `qrcodedesigns_apply_template`, `qrtemplates_list`, `qrtemplates_get`, `qrtemplates_create`, `qrtemplates_update`, `qrtemplates_delete`, `qrtemplates_publish` |
-| Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `pagethemetemplates_*`, `pagethemes_matching_template` |
+| Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `page_themes_bulk_update` (up to 50 links in one call), `pagethemetemplates_*`, `pagethemes_matching_template` |
 | Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
+| Contact tools (CRM and email marketing) | `contact_integrations_list`, `contact_integration_get`, `contact_integration_tool_info`, `contact_integration_connect`, `contact_integration_oauth_start`, `contact_integration_oauth_complete`, `contact_integration_update`, `contact_integration_lists`, `contact_integration_fields`, `contact_integration_pipelines`, `contact_integration_test`, `contact_integration_disconnect` (see `sync-leads-to-crm`) |
 | Webhooks | `webhooks_create`, `webhooks_list`, `webhooks_get`, `webhooks_update`, `webhooks_delete` (see `send-leads-to-webhooks`) |
 | Organisation | `directories_*`, `tags_list` |
 
 The live list is whatever the server returns from `tools/list`; prefer it over this table if they differ. Anything not exposed as a tool (workspace tokens, members) is available through the REST API.
 
-Workflow tips: after creating steps, always run `workflow_steps_validate` and connect every branch reported as missing. See the `build-lead-capture-workflow` skill.
+Workflow tips: after creating steps, always run `workflow_steps_validate` and connect every branch reported as missing. See the `build-lead-capture-workflow` skill. A change that goes on two or more links is one bulk call (`workflow_steps_bulk_insert`, `page_themes_bulk_update`), not one call per link.
 
 Media tips:
 - Bring a file into the media library first, then reference it by id:

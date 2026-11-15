@@ -17,7 +17,7 @@ All REST calls: `https://api.linkbreakers.com`, header `Authorization: Bearer <w
 | --- | --- | --- | --- |
 | Register | `POST /v1/custom-domains` `{"name": "qr.example.com"}` | `domains_create` | `linkbreakers custom-domains create --name qr.example.com` |
 | DNS records to add | `GET /v1/custom-domains/{id}/validation_instructions` | (use REST or the CLI) | `linkbreakers custom-domains validation-instructions --id <id>` |
-| Re-check DNS and TLS | `POST /v1/custom-domains/{id}/check` | `domains_check` | `linkbreakers custom-domains check --id <id>` |
+| Verify DNS and TLS | `POST /v1/custom-domains/{id}:verify` | `domains_verify` | `linkbreakers custom-domains verify --id <id>` |
 | Read / list | `GET /v1/custom-domains/{id}`, `GET /v1/custom-domains` | `domains_get`, `domains_list` | `linkbreakers custom-domains get --id <id>`, `... list` |
 | Root redirect | `PATCH /v1/custom-domains/{id}` `{"rootDestination": "https://example.com"}` | (use REST) | `linkbreakers custom-domains update --id <id> --root-destination https://example.com` |
 | Delete | `DELETE /v1/custom-domains/{id}` | (use REST) | `linkbreakers custom-domains delete --id <id>` |

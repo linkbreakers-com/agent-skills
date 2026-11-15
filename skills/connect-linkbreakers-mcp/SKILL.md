@@ -75,10 +75,10 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | Background jobs | `jobs_get` (poll a job such as `links_bulk_create_async` until it finishes) |
 | Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions`, `workflow_steps_bulk_insert` (the same step on up to 50 links in one call) |
 | Visitors (leads) | `visitors_list`, `visitors_get`, `visitors_list_attribute_keys` |
-| Events and analytics | `events_list`, `metrics_workspace`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
-| Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_check` |
-| QR code styling | `qrcodedesigns_create`, `qrcodedesigns_update`, `qrcodedesigns_apply_template`, `qrtemplates_list`, `qrtemplates_get`, `qrtemplates_create`, `qrtemplates_update`, `qrtemplates_delete`, `qrtemplates_publish` |
-| Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `page_themes_bulk_update` (up to 50 links in one call), `pagethemetemplates_*`, `pagethemes_matching_template` |
+| Events and analytics | `events_list`, `analytics_workspace_metric`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
+| Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_verify` |
+| QR code styling | `qrcode_designs_create`, `qrcode_designs_update`, `qrcode_designs_apply_template`, `qrcode_templates_list`, `qrcode_templates_get`, `qrcode_templates_create`, `qrcode_templates_update`, `qrcode_templates_delete`, `qrcode_templates_publish` |
+| Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `page_themes_bulk_update` (up to 50 links in one call), `pagethemetemplates_*`, `page_theme_templates_find_matching` |
 | Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
 | Contact tools (CRM and email marketing) | `contact_integrations_list`, `contact_integration_get`, `contact_integration_tool_info`, `contact_integration_connect`, `contact_integration_oauth_start`, `contact_integration_oauth_complete`, `contact_integration_update`, `contact_integration_lists`, `contact_integration_fields`, `contact_integration_pipelines`, `contact_integration_test`, `contact_integration_disconnect` (see `sync-leads-to-crm`) |
 | Webhooks | `webhooks_create`, `webhooks_list`, `webhooks_get`, `webhooks_update`, `webhooks_delete` (see `send-leads-to-webhooks`) |
@@ -99,7 +99,7 @@ Media tips:
 - A media item has a kind only. `uploaded_from` says where it was uploaded and is informational; `references` lists where it is used.
 - Use media in these places:
   - `links_create_open_media` (or an `EVENT_ACTION_OPEN_MEDIA` step) opens any media when a visitor scans.
-  - `qrcodedesigns_update` with `central_image_media_id` sets a QR code logo.
+  - `qrcode_designs_update` with `central_image_media_id` sets a QR code logo.
   - `page_themes_update` sets the background cover, badge or footer logo (`footer_logo_enabled` plus `footer_logo`).
 - The QR code logo, background cover, badge and footer logo take an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`.
 - `media_delete` refuses media an Open media step opens or a page theme shows (`MEDIA_IN_USE`, naming the links and templates): point those at other media first. A QR code keeps its own copy of its logo, so deleting a logo only clears the design's link to the media.

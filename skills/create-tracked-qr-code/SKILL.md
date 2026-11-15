@@ -86,7 +86,7 @@ Every QR code in Linkbreakers belongs to a **link**. The link owns the destinati
 - Many QR codes at once (one per table, per store, per product): `POST /v1/links/bulk` with `{"links": [CreateLinkRequest, ...]}` (MCP `links_create_bulk`). When they all go to the same place and only an identifier differs, one dynamic link is simpler: see below.
 - Digital business card that downloads a vCard: `POST /v1/links/contact` (MCP `links_create_contact`).
 - Link that ends on a thank you page instead of a redirect: `POST /v1/links/thank-you` with a required `title` (MCP `links_create_thank_you`).
-- Apply a community QR style: `POST /v1/qrcode-designs/apply-template` (MCP `qrcodedesigns_apply_template`); browse styles with `GET /v1/public/qrcode-templates`.
+- Apply a community QR style: `POST /v1/qrcode-designs/apply-template` (MCP `qrcode_designs_apply_template`); browse styles with `GET /v1/public/qrcode-templates`.
 
 ### One link for many printed codes (dynamic slug)
 
@@ -159,7 +159,7 @@ For several files behind one QR code, use a multi-link menu whose buttons each l
 
 ### QR code logo from the media library
 
-Upload or import the logo as above. Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcodedesigns_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo, and replacing the media's file does not change the QR code either: the design keeps its current logo and is detached from the media. To change the logo, set `centralImageMediaId` again.
+Upload or import the logo as above. Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcode_designs_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo, and replacing the media's file does not change the QR code either: the design keeps its current logo and is detached from the media. To change the logo, set `centralImageMediaId` again.
 
 ## Pitfalls
 

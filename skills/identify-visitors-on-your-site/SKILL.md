@@ -9,7 +9,7 @@ metadata:
 
 # Identify visitors on your own site
 
-When conversion tracking is on, Linkbreakers appends an `lbid` query parameter to the redirect URL. Your site reads it and calls `POST /v1/visitor/identify` with what it knows about the person. Linkbreakers promotes the anonymous scanner to an identified visitor, or merges into an existing visitor with the same identity so devices and events converge on one record.
+When conversion tracking is on, Linkbreakers appends an `lbid` query parameter to the redirect URL. Your site reads it and calls `POST /v1/visitors:identify` with what it knows about the person. Linkbreakers promotes the anonymous scanner to an identified visitor, or merges into an existing visitor with the same identity so devices and events converge on one record.
 
 ## 1. Turn on conversion tracking
 
@@ -29,7 +29,7 @@ Keep it until you learn who the person is (signup, checkout, form).
 
 ## 3. Identify
 
-`POST /v1/visitor/identify`:
+`POST /v1/visitors:identify`:
 
 ```json
 {

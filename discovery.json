@@ -82,7 +82,7 @@
             "uri": "ui://linkbreakers/workspace-metrics.html",
             "title": "Workspace metrics",
             "tools": [
-              "metrics_workspace"
+              "analytics_workspace_metric"
             ]
           }
         ]

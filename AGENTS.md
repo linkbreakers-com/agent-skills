@@ -75,7 +75,7 @@ Every API operation is a command, `linkbreakers <service> <operation>`, generate
 
 ## MCP
 
-- Product: `https://mcp.linkbreakers.com`, Streamable HTTP, OAuth 2.1. It does not accept dashboard API tokens (it answers `API tokens are not accepted by the MCP server; connect with OAuth`); the only other credential it takes is the token from anonymous agent registration (https://linkbreakers.com/auth.md). Configure it with the plain URL and no `Authorization` header. Claude Code: `claude mcp add --transport http linkbreakers https://mcp.linkbreakers.com`. Tool names are snake_case (`links_create`, `workflow_steps_create`, `workflow_steps_connect`, `workflow_steps_validate`, `visitors_list`, `domains_check`, ...).
+- Product: `https://mcp.linkbreakers.com`, Streamable HTTP, OAuth 2.1. It does not accept dashboard API tokens (it answers `API tokens are not accepted by the MCP server; connect with OAuth`); the only other credential it takes is the token from anonymous agent registration (https://linkbreakers.com/auth.md). Configure it with the plain URL and no `Authorization` header. Claude Code: `claude mcp add --transport http linkbreakers https://mcp.linkbreakers.com`. Tool names are snake_case (`links_create`, `workflow_steps_create`, `workflow_steps_connect`, `workflow_steps_validate`, `visitors_list`, `domains_verify`, ...).
 - Docs: `https://linkbreakers.com/mcp`, no auth.
 
 ## Rules for agents

@@ -71,7 +71,7 @@ With `include=journey`, each event carries `journey.completed`, `journey.stepsRe
 ## 7. Funnel and totals
 
 - Step funnel for a link (distinct visitors per step, conversion and drop-off): `POST /v1/analytics/funnel` with `{"linkId": "...", "startDate": "...", "endDate": "..."}`. MCP: `analytics_step_funnel`.
-- Workspace totals: `GET /v1/metrics/workspace`. MCP: `metrics_workspace`.
+- Workspace totals: `GET /v1/metrics/workspace`. MCP: `analytics_workspace_metric`.
 
 ## Pitfalls
 

@@ -79,7 +79,7 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_verify` |
 | QR code styling | `qrcode_designs_create`, `qrcode_designs_update`, `qrcode_designs_apply_template`, `qrcode_templates_list`, `qrcode_templates_get`, `qrcode_templates_create`, `qrcode_templates_update`, `qrcode_templates_delete`, `qrcode_templates_publish` |
 | Page styling | `page_themes_list`, `page_themes_get`, `page_themes_update`, `page_themes_apply_template`, `page_themes_bulk_update` (up to 50 links in one call), `page_theme_templates_*`, `page_theme_templates_find_matching` |
-| Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_create`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
+| Media library (PDFs, images, MP4 videos) | `media_list`, `media_get`, `media_import`, `media_upload_create`, `media_upload_complete`, `media_replace_upload_create`, `media_replace_upload_complete`, `media_replace_import`, `media_delete` |
 | Contact tools (CRM and email marketing) | `contact_integrations_list`, `contact_integration_get`, `contact_integration_tool_info`, `contact_integration_connect`, `contact_integration_oauth_start`, `contact_integration_oauth_complete`, `contact_integration_update`, `contact_integration_lists`, `contact_integration_fields`, `contact_integration_pipelines`, `contact_integration_test`, `contact_integration_disconnect` (see `sync-leads-to-crm`) |
 | Webhooks | `webhooks_create`, `webhooks_list`, `webhooks_get`, `webhooks_update`, `webhooks_delete` (see `send-leads-to-webhooks`) |
 | Organisation | `directories_*`, `tags_list` |
@@ -89,10 +89,9 @@ The live list is whatever the server returns from `tools/list`; prefer it over t
 Workflow tips: after creating steps, always run `workflow_steps_validate` and connect every branch reported as missing. See the `build-lead-capture-workflow` skill. A change that goes on two or more links is one bulk call (`workflow_steps_bulk_insert`, `page_themes_bulk_update`), not one call per link.
 
 Media tips:
-- Bring a file into the media library first, then reference it by id:
-  - `media_import` fetches it from an https URL;
-  - `media_create` takes it inline, base64, up to 3 MB;
-  - larger files go through `media_upload_create`, a PUT of the bytes to the returned `upload_url`, then `media_upload_complete`.
+- A file is never sent in a tool call or a request: bring it into the media library first, then pass its `media_id` to whatever takes a file:
+  - a local file of any size goes through `media_upload_create` (declare `file_name`, `mime_type`, the exact `size`), a PUT of its bytes to the returned `upload_url` with every `upload_headers` entry, then `media_upload_complete`;
+  - `media_import` fetches a file from an https URL.
 - A workspace holds each file once. Uploading or importing bytes the library already has fails with HTTP 409 `MEDIA_ALREADY_EXISTS`; the error's `metadata.existingMediaId` and `metadata.existingFileName` name that media. Use that id and carry on; do not retry or upload the file again.
 - Pass `sha256` (the file's SHA-256 as 64 hex characters) to `media_upload_create` when you can: a file already in the library is then refused before any bytes travel. Storage also refuses bytes that do not match it, so the PUT must send every header in `upload_headers`, `x-amz-checksum-sha256` included. Without `sha256` the duplicate is caught by `media_upload_complete` instead, and the upload is discarded.
 - Limits by kind: images (PNG, JPEG, WebP, SVG) up to 10 MB, PDFs up to 25 MB, MP4 videos up to 50 MB. Every upload counts toward the workspace's storage allowance.

@@ -144,10 +144,9 @@ The file lives in the workspace's media library, and the link's exit step opens 
 
 1. Put the file in the media library and keep its `id`. Pick the first option that fits:
    - The file is at a public https URL: `POST /v1/media:import` (MCP `media_import`). The server fetches it.
-   - The file is local and at most 3 MB: `POST /v1/media` with base64 `fileData` and `fileName` (MCP `media_create`).
-   - The file is larger: `POST /v1/media/uploads` with `fileName`, `mimeType` and the exact `size` (MCP `media_upload_create`). PUT the bytes to the returned `uploadUrl` with its `uploadHeaders`, then call `POST /v1/media/{id}:complete` (MCP `media_upload_complete`).
+   - The file is local, whatever its size: `POST /v1/media/uploads` with `fileName`, `mimeType` and the exact `size` (MCP `media_upload_create`). PUT the bytes to the returned `uploadUrl` with its `uploadHeaders`, then call `POST /v1/media/{id}:complete` (MCP `media_upload_complete`).
    - The file is already uploaded: find it with `GET /v1/media` (MCP `media_list`).
-   - A workspace holds each file once. Any of these calls answers HTTP 409 `MEDIA_ALREADY_EXISTS` for a file already in the library, with the existing media in `metadata.existingMediaId` (and `metadata.existingFileName`). Use that id; it is not a failure. For a direct upload, pass the file's SHA-256 as `sha256` (hex) so the duplicate is refused before the PUT, and send every `uploadHeaders` entry on the PUT, `x-amz-checksum-sha256` included.
+   - A workspace holds each file once. Any of these calls answers HTTP 409 `MEDIA_ALREADY_EXISTS` for a file already in the library, with the existing media in `metadata.existingMediaId` (and `metadata.existingFileName`). Use that id; it is not a failure. For an upload, pass the file's SHA-256 as `sha256` (hex) so the duplicate is refused before the PUT, and send every `uploadHeaders` entry on the PUT, `x-amz-checksum-sha256` included.
 
    Limits: images (PNG, JPEG, WebP, SVG) up to 10 MB, PDFs up to 25 MB, MP4 videos up to 50 MB. Every upload also counts toward the workspace's storage allowance: Free 25 MB, Light 500 MB, Pro 10 GB, custom on Enterprise.
 
@@ -159,7 +158,9 @@ For several files behind one QR code, use a multi-link menu whose buttons each l
 
 ### QR code logo from the media library
 
-Upload or import the logo as above. Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcode_designs_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo, and replacing the media's file does not change the QR code either: the design keeps its current logo and is detached from the media. To change the logo, set `centralImageMediaId` again.
+Upload or import the logo as above: the logo is never sent in the request itself (there is no `centralImageData`). Then set it on the link's QR code design with `PATCH /v1/qrcode-designs/{id}` and `{"centralImageMediaId": "<media id>"}` (MCP `qrcode_designs_update` with `central_image_media_id`). The logo must be an image of at most 3 MB; anything else fails with `MEDIA_NOT_ALLOWED_HERE`. The design keeps its own copy, so deleting the media later does not remove the logo, and replacing the media's file does not change the QR code either: the design keeps its current logo and is detached from the media. To change the logo, set `centralImageMediaId` again.
+
+Without an API token, `POST /v1/qrcode-designs` creates a design whose logo is a public upload: `POST /v1/media/public-uploads` with `fileName`, `mimeType` and `size` (an image of at most 3 MB), a PUT of the bytes to `uploadUrl` with its `uploadHeaders`, `POST /v1/media/public-uploads/{id}:complete`, then the design with `{"centralImageMediaId": "<id>"}`. The upload is deleted within the hour; the design keeps its copy.
 
 ## Pitfalls
 

@@ -73,7 +73,7 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | --- | --- |
 | Links and QR codes | `links_create`, `links_create_bulk`, `links_bulk_create_async`, `links_create_contact`, `links_create_thank_you`, `links_create_open_media`, `links_get`, `links_list`, `links_update`, `links_delete` |
 | Background jobs | `jobs_get` (poll a job such as `links_bulk_create_async` until it finishes) |
-| Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions`, `workflow_steps_bulk_insert` (the same step on up to 50 links in one call) |
+| Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions`, `workflow_steps_bulk_insert` (the same step on up to 50 links in one call), `workflow_steps_export` and `workflow_steps_import` (copy steps with their connections to another link, or as a portable JSON document) |
 | Visitors (leads) | `visitors_list`, `visitors_get`, `visitors_list_attribute_keys` |
 | Events and analytics | `events_list`, `analytics_workspace_metric`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_verify` |

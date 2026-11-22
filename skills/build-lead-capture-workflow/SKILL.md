@@ -30,6 +30,8 @@ You capture leads by inserting steps between them. Anything a visitor submits la
 | Tidy the canvas | `POST /v1/links/{linkId}/workflow-steps/auto-layout` | `workflow_steps_auto_layout` |
 | Insert one step on many links (up to 50) | `POST /v1/workflow-steps/bulk-insert` | `workflow_steps_bulk_insert` |
 | Restyle many links' pages (up to 50) | `POST /v1/page-themes/bulk-update` | `page_themes_bulk_update` |
+| Copy steps to another link (with their settings and connections) | `POST /v1/links/{linkId}/workflow-steps/import` with `{"sourceLinkId": "...", "sourceStepIds": [...]}` | `workflow_steps_import` |
+| Export steps as a portable JSON document (no ids, no secrets; [schema](https://linkbreakers.com/schemas/workflow-steps/v1.json)) | `POST /v1/links/{linkId}/workflow-steps/export` with `{"stepIds": [...]}`, then import it anywhere with `{"document": {...}}` | `workflow_steps_export` |
 
 All REST calls use `Authorization: Bearer <workspace token>` against `https://api.linkbreakers.com`.
 

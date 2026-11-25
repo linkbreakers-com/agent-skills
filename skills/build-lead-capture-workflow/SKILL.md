@@ -119,6 +119,20 @@ Page steps can show a secondary button that returns the visitor to the previous 
 
 The label is up to 40 characters and defaults to "Back". The button hides itself when there is no previous page, such as on the first page right after a scan.
 
+## A page's own badge and cover
+
+Any page step (`rendersPage: true`) can show its own badge image and cover image instead of the page theme's, on that step only: a logo on the thank-you page, each person's photo on their contact card, another cover on the form. Only the pictures change; the theme's colours, fonts, badge shape and cover placement stay the same on every step, so never restyle one page another way.
+
+`media` is a top-level field of the create or update request, not part of `payload`. Each slot is the id of an image in the media library (PNG, JPEG, WebP or SVG, at most 3 MB; get it there as in "Opening a file" below):
+
+```json
+{"media": {"badgeMediaId": "<image id>", "coverMediaId": ""}}
+```
+
+- Sending `media` replaces both slots: send the current value of the slot you are not changing, and `""` to go back to the theme's image. Leave `media` out to keep them.
+- A redirect, open media step or condition refuses it with `STEP_MEDIA_NOT_AVAILABLE`; media of another workspace or an unfinished upload with `STEP_MEDIA_INVALID`; anything but an image of at most 3 MB with `MEDIA_NOT_ALLOWED_HERE`.
+- A contact card's photo is its badge: `vcard.avatarMediaId` reads and sets the same value, and the downloaded contact carries it.
+
 ## Opening a file (PDF, image, video)
 
 1. Get the file into the media library. Use `media_list` (filter by kind) for one already there, `media_import` (`POST /v1/media:import`) to fetch it from an https URL, `media_create` (`POST /v1/media`, base64, up to 3 MB), or a direct upload for larger files (`media_upload_create`, PUT the bytes, `media_upload_complete`). Limits: images 10 MB, PDFs 25 MB, MP4 videos 50 MB, all within the workspace's storage allowance. A workspace holds each file once: a file already in the library fails with HTTP 409 `MEDIA_ALREADY_EXISTS` and names it in `metadata.existingMediaId`, so use that id as the `mediaId`. A direct upload can declare `sha256` (hex) to be refused before any bytes travel.
@@ -193,7 +207,7 @@ Both return one result per link, in the order named, with `succeededCount` and `
 - Never leave a branch unconnected; always finish with validate.
 - Exit steps end the journey. Do not try to connect anything out of them.
 - For a "Back to menu" button, prefer `backButton` on the sub-page. Connect a branch back to the menu only when the page must always lead there or the click must be recorded as a journey step.
-- A media item still used by an Open media step cannot be deleted. Point the step at other media first.
+- A media item still used by an Open media step, or as a step's own badge or cover, cannot be deleted. Point the step at other media first.
 - Do not invent step ids. Use the ids returned by create/list calls.
 - Do not loop over links one call at a time for the same change: use the bulk calls above.
 - To push captured leads somewhere else, add a webhook (`send-leads-to-webhooks` skill).

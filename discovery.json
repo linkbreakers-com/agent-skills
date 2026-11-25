@@ -182,12 +182,12 @@
   "skills": [
     {
       "name": "build-lead-capture-workflow",
-      "description": "Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.",
+      "description": "Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, an AI chat bot that answers from Markdown, web pages, PDFs and images, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.",
       "path": "skills/build-lead-capture-workflow/SKILL.md"
     },
     {
       "name": "connect-linkbreakers-mcp",
-      "description": "Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, media, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.",
+      "description": "Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, AI chat bot agents and their knowledge, media, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.",
       "path": "skills/connect-linkbreakers-mcp/SKILL.md"
     },
     {

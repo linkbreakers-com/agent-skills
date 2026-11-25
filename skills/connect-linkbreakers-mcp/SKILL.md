@@ -1,10 +1,10 @@
 ---
 name: connect-linkbreakers-mcp
-description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, media, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.
+description: Connect an AI assistant (Claude, Claude Code, Cursor, VS Code, Continue or any MCP client) to the hosted Linkbreakers MCP server at https://mcp.linkbreakers.com with OAuth sign-in, then pick the right MCP tools for links, QR codes, workflows, AI chat bot agents and their knowledge, media, visitors, domains and analytics. Use when the user wants their assistant to operate their Linkbreakers workspace directly, asks for the Linkbreakers MCP URL or config, or the MCP connection is failing.
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.5"
+  version: "1.6"
 ---
 
 # Connect the Linkbreakers MCP server
@@ -74,6 +74,7 @@ Ask the assistant to "list my Linkbreakers links". It should call `links_list`. 
 | Links and QR codes | `links_create`, `links_create_bulk`, `links_bulk_create_async`, `links_create_contact`, `links_create_thank_you`, `links_create_open_media`, `links_get`, `links_list`, `links_update`, `links_delete` |
 | Background jobs | `jobs_get` (poll a job such as `links_bulk_create_async` until it finishes) |
 | Workflow steps | `workflow_steps_create`, `workflow_steps_get`, `workflow_steps_list`, `workflow_steps_update`, `workflow_steps_delete`, `workflow_steps_connect`, `workflow_steps_disconnect`, `workflow_steps_validate`, `workflow_steps_auto_layout`, `workflow_steps_resolve_collisions`, `workflow_steps_bulk_insert` (the same step on up to 50 links in one call), `workflow_steps_export` and `workflow_steps_import` (copy steps with their connections to another link, or as a portable JSON document) |
+| AI chat bot agents | `agents_list`, `agents_get`, `agents_create`, `agents_update`, `agents_delete`, `agents_list_presets`; knowledge items (Markdown, one web page, or a PDF or image of the media library, read in the background): `agents_knowledge_items_create`, `agents_knowledge_items_update`, `agents_knowledge_items_refresh`, `agents_knowledge_items_delete` (see `build-lead-capture-workflow`) |
 | Visitors (leads) | `visitors_list`, `visitors_get`, `visitors_list_attribute_keys` |
 | Events and analytics | `events_list`, `analytics_workspace_metric`, `analytics_step_funnel`, `analytics_traffic_split_results`, `analytics_dashboards_list`, `analytics_dashboards_create`, `analytics_dashboards_update`, `analytics_dashboards_delete` |
 | Custom domains | `domains_create`, `domains_get`, `domains_list`, `domains_verify` |

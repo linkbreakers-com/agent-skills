@@ -1,10 +1,10 @@
 ---
 name: build-lead-capture-workflow
-description: Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.
+description: Turn a Linkbreakers link or QR code into a lead capture flow by adding workflow steps (forms, an AI chat bot that answers from Markdown, web pages, PDFs and images, conditions, multi-link pages, message pages, thank you pages, contact cards, redirects, opening a PDF, image or video) and wiring their branches. Use when the user wants to collect emails, phone numbers or answers from people who scan a QR code, qualify visitors, route them by country, device or previous answers, or gate content behind a form or password.
 license: MIT
 metadata:
   author: linkbreakers
-  version: "1.5"
+  version: "1.6"
 ---
 
 # Build a lead capture workflow
@@ -39,6 +39,7 @@ All REST calls use `Authorization: Bearer <workspace token>` against `https://ap
 
 - Interaction, one branch `next`: `EVENT_ACTION_FORM_SUBMIT` (payload `form`), `EVENT_ACTION_PASSWORD_VERIFY` (`password`), `EVENT_ACTION_MESSAGE_PAGE` (`messagePage`, one button or a timer).
 - Composite, one branch per button/option/range plus `else` on conditions: `EVENT_ACTION_MULTI_LINK` (`multiLink`, each button continues into more workflow), `EVENT_ACTION_COUNTRY_CONDITION`, `EVENT_ACTION_VISIT_TYPE_CONDITION` (first vs returning), `EVENT_ACTION_DEVICE_TYPE_CONDITION`, `EVENT_ACTION_DEVICE_PLATFORM_CONDITION`, `EVENT_ACTION_DEVICE_BROWSER_CONDITION`, `EVENT_ACTION_DEVICE_BRAND_CONDITION`, `EVENT_ACTION_DEVICE_ACTOR_CONDITION`, `EVENT_ACTION_DAY_OF_WEEK_CONDITION`, `EVENT_ACTION_TIME_OF_DAY_CONDITION`, `EVENT_ACTION_DAY_OF_MONTH_CONDITION`, `EVENT_ACTION_SPECIFIC_DATE_CONDITION`, `EVENT_ACTION_VISITOR_DATA_CONDITION` (route on profile data already captured).
+- Composite with two branches, `completed` and `else`: `EVENT_ACTION_CHAT_BOT` (`chatBot`), an AI chat run by one of the workspace's agents. See "AI chat bot" below.
 - Composite with no `else`, one branch per variant: `EVENT_ACTION_TRAFFIC_SPLIT` (`trafficSplit`), an A/B test. See "Traffic split" below.
 - Exit, no branches:
   - `EVENT_ACTION_CLIENT_REDIRECT` (`clientRedirect`).
@@ -139,6 +140,32 @@ Any page step (`rendersPage: true`) can show its own badge image and cover image
 2. Create an `EVENT_ACTION_OPEN_MEDIA` step with its `mediaId` and connect a branch to it, or for a link that only opens the file use `POST /v1/links/open-media` (MCP `links_create_open_media`).
 3. For several files, build a multi-link menu with one button per file, each connected to its own Open media step.
 4. Swap the file later by updating the step's `mediaId`, or replace the media's file in place (`media_replace_import` from an https URL, or `media_replace_upload_create`, PUT, `media_replace_upload_complete`) so every step and page theme using that media follows. The link and the printed QR code stay the same. A replacement every use cannot take fails with `MEDIA_REPLACE_NOT_ALLOWED`, listing each refusing use and why in its message and in `metadata.refusals`.
+
+## AI chat bot (agent and its knowledge)
+
+A `EVENT_ACTION_CHAT_BOT` step shows the visitor a chat with an **agent**: a persona of the workspace (role, tone, guardrails) that answers the visitor's questions from its **knowledge** and asks for what the step lists, saving each answer on the visitor like a form field.
+
+1. Create the agent, or reuse one from `agents_list`: `agents_create` (`POST /v1/agents`) with a `name`, and for example `role` `AGENT_ROLE_PRODUCT_EXPERT` and `guardrails` including `AGENT_GUARDRAIL_KNOWLEDGE_ONLY` (it then says it does not know rather than guessing). `agents_list_presets` lists every role, tone and guardrail with what it does.
+2. Add knowledge items, one call each, with `agents_knowledge_items_create` (`POST /v1/agents/{agentId}/knowledge-items`):
+
+   | `kind` | Fields | Read |
+   | --- | --- | --- |
+   | `AGENT_KNOWLEDGE_ITEM_KIND_MARKDOWN` | `title` (required), `content` | Ready at once |
+   | `AGENT_KNOWLEDGE_ITEM_KIND_WEB_PAGE` | `url` (http or https), optional `title` | One page, fetched and turned into Markdown in the background. Not a crawl: add one item per page |
+   | `AGENT_KNOWLEDGE_ITEM_KIND_MEDIA` | `mediaId` of a PDF (up to 25 MB) or a PNG, JPEG or WebP image (up to 10 MB) in the media library, optional `title` | Read by an AI model in the background, for a few platform credits |
+
+   ```bash
+   curl -sS -X POST "https://api.linkbreakers.com/v1/agents/$AGENT_ID/knowledge-items" \
+     -H "Authorization: Bearer $LINKBREAKERS_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"kind": "AGENT_KNOWLEDGE_ITEM_KIND_WEB_PAGE", "url": "https://example.com/menu"}'
+   ```
+
+   A web page or media item comes back with `status` `AGENT_KNOWLEDGE_ITEM_STATUS_READING`, then turns `..._READY` or `..._FAILED` with a readable `failureReason` (404, a page built only by JavaScript, a site blocking bots, no text in the file, not enough room left, no credits). Read it back with `agents_get` (`GET /v1/agents/{id}`), which returns every item with its `status` and the text read in `content`. Only ready items are known by the agent. For a page that cannot be read, add its text as a Markdown item instead, or the page saved as a PDF.
+3. Keep it current: `agents_knowledge_items_refresh` (`POST .../knowledge-items/{id}:refresh`) reads a page or file again (the agent keeps the previous text meanwhile); `agents_knowledge_items_update` (`PATCH`) changes a title, a Markdown item's `content`, a page's `url` or the `mediaId` (the kind cannot change); `agents_knowledge_items_delete` removes one. Replacing a media item's file re-reads it on its own, and media read as knowledge cannot be deleted (`MEDIA_IN_USE`, reference type `TYPE_AGENT_KNOWLEDGE`).
+4. Create the step with `payload.chatBot`: `agentId`, `objectives` (up to 10 of `{key, label, explanation, type, required}`, `type` a `FORM_FIELD_TYPE_*`), and optionally `openingMessage`, `maxExchanges` (3 to 30), `skipWhenKnown`, `skipEnabled`, `skipLabel`. Connect `completed` (every required objective known) and `else` (skipped, message limit, out of credits); an unconnected `else` follows `completed`.
+
+Limits: 20 knowledge items per agent and 50,000 characters of text across them (a page or file counts as the text read), titles up to 120 characters. Each visitor message the agent answers costs platform credits. Ask the user before deleting an agent or a knowledge item.
 
 ## Saving data without a form
 
